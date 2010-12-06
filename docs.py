@@ -100,6 +100,9 @@ def search_handler(request):
 
 @Request.application
 def app(request):
+    if os.environ.get('SERVER_SOFTWARE') == "development":
+        # create in memory tables
+        import tests
     try:
         return routes.dispatch(request)
     except HTTPException, e:
