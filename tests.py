@@ -1,51 +1,26 @@
 #!/usr/bin/python
 import os
 import unittest
-import docs
 import simplejson
 import shutil
 
 from werkzeug import EnvironBuilder
 from werkzeug import Request
+from werkzeug import Client
+from werkzeug import BaseResponse
 
-from storm.locals import create_database
-from storm.locals import Store
+from models import Documentation
+from models import User
 
-from enginedoc.models import Documentation
-from enginedoc.models import User
-from enginedoc.models import get_db
-
-from enginedoc.helpers import routes
-
-from enginedoc.consts import PREFIXURL
-from enginedoc import search
-
-import docs
+import index
 
 os.environ['MODE'] = 'test'
 os.environ['REMOTE_USER'] = 'dam'
 
-db = get_db()
-search.INDEX_PATH = "test_index"
+index.INDEX_PATH = "test_index"
 
-def create_tables():
-    create_doc = "CREATE TABLE documentation (\
-body VARCHAR,\
-category VARCHAR,\
-id INTEGER PRIMARY KEY AUTOINCREMENT,\
-title VARCHAR\
-)"
-    db.execute(create_doc)
-
-    create_users = "CREATE TABLE users (\
-username VARCHAR PRIMARY KEY,\
-password VARCHAR,\
-fullname VARCHAR,\
-privileges VARCHAR\
-)"
-    db.execute(create_users)
-
-create_tables()
+from application import Docs
+app = Docs("sqlite:///docs.db")
 
 class DocumentationHandlerTest(unittest.TestCase):
 
@@ -53,86 +28,54 @@ class DocumentationHandlerTest(unittest.TestCase):
         self.doc = Documentation()
         self.doc.category = u'acategory'
         self.doc.title = u'adoc'
-        db.add(self.doc)
-
-        self.user = User()
-        self.user.username = u'dam'
-        self.user.privileges = u'a'
-        db.add(self.user)
-        db.commit()
+        self.doc.put()
+        self.c = Client(app, BaseResponse)
 
     def tearDown(self):
-        db.remove(self.doc)
-        db.remove(self.user)
-        db.commit()
+        self.doc.delete()
     
     def test_post_new_doc(self):
-        builder = EnvironBuilder(
+        r = self.c.post(
             path="/",
-            method='POST',
             data={'body': u'the body','category': u'the category','title': u'the title'}
             )
-        request = Request(environ=builder.get_environ())
-        response = routes.dispatch(request).data
-        self.assertTrue("Documentation the title added" in response)
-        id = simplejson.loads(response)['id']
-        doc = db.get(Documentation, int(id))
-        self.assertFalse(doc == None)
-        self.assertEquals(doc.body, u'the body')
-        self.assertEquals(doc.category, u'the category')
-
-        # check index
-        
+        self.assertEquals(r.status_code, 302)
+        # # check index
 
     def test_get_edit_doc(self):
-        builder = EnvironBuilder(
+        r = self.c.get(
             path="/%s/edit/" % (self.doc.id),
-            data={'id': self.doc.id},
-            method='GET',
+            data={'id': self.doc.id}
             )
-        request = Request(environ=builder.get_environ())
-        response = routes.dispatch(request).data
-        self.assertFalse(response == None)
-        self.assertTrue('acategory' in response)
-        self.assertTrue('adoc' in response)
+        self.assertTrue('acategory' in r.data)
+        self.assertTrue('adoc' in r.data)
 
     def test_get_docs(self):
-        builder = EnvironBuilder()
-        request = Request(environ=builder.get_environ())
-        response = routes.dispatch(request).data
-        self.assertFalse(response == None)
-        self.assertTrue('acategory' in response)
+        r = self.c.get(path="/")
+        self.assertFalse(r.data == None)
+        self.assertTrue('acategory' in r.data)
 
     def test_put_doc(self):
-        builder = EnvironBuilder(
+        r = self.c.post(
             path="/%s/" % self.doc.id,
             data= {'body': u'new body',
                    'category': u'new category',
-                   'title': u'new title'},
-            method='POST')
-        request = Request(environ=builder.get_environ())
-        response = routes.dispatch(request).data
-        self.assertTrue(response)
-        obj = simplejson.loads(response)
-        self.assertEquals(obj['message'], 'Documentation new title updated')
-        self.assertEquals(obj['action'], PREFIXURL + str(self.doc.id) + '/')
+                   'title': u'new title'})
+        self.assertEquals(r.status_code, 302)
+        self.assertTrue(r.data)
 
     def test_get_body_doc(self):
-        builder = EnvironBuilder(
-            path="/%s/body/" % self.doc.id,
-            method='GET')
-        request = Request(environ=builder.get_environ())
-        response = routes.dispatch(request).data
-        self.assertTrue(response)
-        self.assertTrue('adoc' in response)
+        r = self.c.get(path="/%s/body/" % self.doc.id)
+        self.assertTrue(r.data)
+        self.assertTrue('adoc' in r.data)
 
 class SearchIndexTest(unittest.TestCase):
 
     def setUp(self):
         # remove the index by deleting it
-        if os.path.exists(search.INDEX_PATH):
-            shutil.rmtree(search.INDEX_PATH)
-        self.index = search.Index()
+        if os.path.exists(index.INDEX_PATH):
+            shutil.rmtree(index.INDEX_PATH)
+        self.index = index.Index()
 
     def tearDown(self):
         pass
@@ -157,7 +100,6 @@ class SearchIndexTest(unittest.TestCase):
         self.index.add(**helptext)
         result = self.index.find(q='body')
         self.assertEquals(result.total, 1)
-        
         
 if __name__ == '__main__':
     unittest.main()

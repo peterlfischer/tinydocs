@@ -1,1 +1,6 @@
 CVS
+*.pyc
+test_index
+index
+docs.db
+.ropeproject

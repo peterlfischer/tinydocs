@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Search Results</h1>
+<div id="search_info" style="float:right">
+  {% if results.total == 1 %}
+1 match. 
+  {% else %}
+{{ results.total }} matches.
+  {% endif %}
+</div>
+<div>
+{%- if results.count == 0 %}
+Your search didn't return any results
+{% else %}
+<ul>
+  {%- for r in results %}
+    <li><h3><a href="{{r.url}}">{{r.category}} | {{r.title}}</a></h3><p>{{r.body|truncate}}</li>
+  {%- endfor %}
+</ul>
+{% endif %}
+<div style="width:100%;text-align:center;">
+{%- for p in range(results.pagecount) %}
+  {%- if p > 1 %}
+<a href="{{query}}&page={{p}}">{{page}}</a>
+  {%- endif %}
+{%- endfor %}
+</ul>
+</div>
+{% endblock %}

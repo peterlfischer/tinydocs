@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Steam Engine | Documentation</title>
+
+    <link href="/css/custom.css" rel="stylesheet" />
+    <script src="//ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" 
+            djConfig="isDebug:true,parseOnLoad:true"></script>
+    <script type="text/javascript">
+      dojo.require("dojox.widget.Toaster");
+      dojo.require("dijit.form.Button");
+    </script>
+  </head>
+  <body class="tundra docs" style="height: 495px;width:100%">
+
+    <div style="margin: 20px" id="search">
+      <a href="{{ url_for('docs') }}">Overview</a>
+      <a href="{{ url_for('form') }}">Add</a>
+
+      <form action="{{ url_for('search') }}" style="float:right">
+        <span id="help_8" class="helpTooltip" style="opacity:0"></span>
+        <input type="text" name="q" value="{{query}}" />
+        <input type="submit" value="search" class="dijitButtonNode" />
+      </form>
+      {% block body %}{% endblock %}  
+      <div id="toaster">
+      </div>
+   </div>
+
+    <script src="js/steamengine/docs.js"></script>
+    <script src="js/steamengine/enginedoc.js"></script>
+    <script>
+      var isIframe = window.top !== this;
+
+      dojo.query('a').onclick(function(e){
+        // are we in an iframe?
+        if(isIframe){
+          e.preventDefault();
+          if(dojo.isIE){
+             parent.location.hash = '_help/' + this.pathname;
+          }
+          else{
+             parent.location.hash = '_help' + this.pathname;
+          }
+        }
+      });
+
+      dojo.ready(function(){
+        dojo.query('.helpTooltip').helpTooltip();
+        var toaster = new dojox.widget.Toaster({
+            id: 'dojoToaster',
+            positionDirection: "bl-up",
+            messageTopic : "message"
+        },
+        dojo.byId('toaster'));
+      });
+     </script>
+  </body>
+</html>
