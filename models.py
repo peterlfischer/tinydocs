@@ -64,6 +64,12 @@ class Topic(TinyDocsModel, db.Model):
     def get_key_name(self):
         return "%s/%s" % (slugify(self.category),slugify(self.name))  
 
+    def put(self):
+        import index
+        super(Topic, self).put()
+        index.add(body=self.body, category=self.category, name=self.name, url=self.url)
+        return self
+        
     @property
     def url(self):
         return '/%s/%s/' % (self.system, self.key_name)

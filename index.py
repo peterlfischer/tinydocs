@@ -1,4 +1,5 @@
 import re
+import logging
 
 from whoosh.index import create_in
 from whoosh.index import open_dir
@@ -13,16 +14,16 @@ from os import chown
 from os import listdir
 from os import mkdir
 
+from config import INDEX_PATH
 import shutil
 import pwd
 
-INDEX_PATH = path.join(path.dirname(__file__), "test_index")
-INDEX_SCHEMA = Schema(
-                body=TEXT(stored=True),
-                title=TEXT(stored=True, field_boost=2.0),
-                category=TEXT(stored=True, field_boost=2.0),
-                url=ID(stored=True, unique=True),
-                id=ID(stored=True, unique=True))
+index_schema = Schema(
+    name=TEXT(stored=True, field_boost=2.0),
+    category=TEXT(stored=True, field_boost=2.0),
+    body=TEXT(stored=True),
+    url=ID(stored=True, unique=True),
+    )
 
 def strip_tags(value):
     return re.sub(r'<[^>]*?>', '', value)
@@ -33,8 +34,6 @@ class Index(object):
         self.ix = self.get_or_create_index()
         
     def add(self, **kwargs):
-        """
-        """
         for k,v in kwargs.iteritems():
             kwargs[k] = unicode(v)
         kwargs['body'] = strip_tags(kwargs['body']) 
@@ -44,45 +43,61 @@ class Index(object):
         writer.update_document(**kwargs)
         writer.commit()
 
-    def delete(self, id):
+    def delete(self, key_name):
         writer = self.ix.writer()
-        writer.delete_document(id)
+        writer.delete_document(key_name)
         writer.commit()
     
     def merge(self):
         self.ix.merge()
 
-    def find(self, page=1, q=""):
-        """Finds results with occurences of the query.
-        """
-        q = unicode(q)
-        query = MultifieldParser(['body', 'title', 'category'], schema=INDEX_SCHEMA).parse(q)
+    def find(self, page=1, query=""):
+        logging.info('index::find querying for: %s' % query)
+        query = unicode(query)
+        query = MultifieldParser(['body', 'name', 'category'], schema=index_schema).parse(query)
         searcher = self.ix.searcher()
         return searcher.search_page(query, page)
 
     def get_or_create_index(self):
         if not path.exists(INDEX_PATH):
             mkdir(INDEX_PATH)
-            return create_in(INDEX_PATH, INDEX_SCHEMA)
+            return create_in(INDEX_PATH, index_schema)
         return open_dir(INDEX_PATH)
 
-def find(page=1, q=""):
-    return Index().find(page=page, q=q)
+# useful shortcuts
+
+def find(page=1, query=""):
+    """Finds results with occurences of the query.
+
+    :param page: the page number to retrieve
+    :param q: query string
+    """
+    return Index().find(page=page, query=query)
 
 def add(**kwargs):
+    """Adds a topic to the index.
+
+    :param kwargs: values to add
+    """
     return Index().add(**kwargs)
     
-def delete(id):
+def delete(url):
+    """Delete a topic from the index.
+
+    :param url: url of topic to delete
+    """
     return Index().delete(id)
 
 def remove():
+    """Removed index
+
+    """
     if path.exists(INDEX_PATH):
         shutil.rmtree(INDEX_PATH)
 
 def populate():
-    from models import Documentation
-    from helpers import Session
-    for d in Session.query(Documentation).all():
+    from models import Topic
+    for d in Topic.query.all():
         d.put()
 
 def set_permissions():

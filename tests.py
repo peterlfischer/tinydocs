@@ -1,6 +1,11 @@
 #!/usr/bin/python
-import tiny
+import os
+import shutil
 import unittest
+
+import config
+import index
+import tiny
 
 from models import Topic
 from models import System
@@ -61,37 +66,37 @@ class TopicHandlerTest(unittest.TestCase):
         self.assertEquals(r.status_code, 302)
         self.assertEquals(r.headers.get('location'), 'http://new-category/new-name/')
 
-# class SearchIndexTest(unittest.TestCase):
+class SearchIndexTest(unittest.TestCase):
 
-#     def setUp(self):
-#         # remove the index by deleting it
-#         if os.path.exists(index.INDEX_PATH):
-#             shutil.rmtree(index.INDEX_PATH)
-#         self.index = index.Index()
+    def setUp(self):
+        # remove the index by deleting it
+        if os.path.exists(config.INDEX_PATH):
+            shutil.rmtree(config.INDEX_PATH)
+        self.index = index.Index()
 
-#     def tearDown(self):
-#         pass
+    def tearDown(self):
+        pass
 
-#     def testAdd(self):
-#         helptext = {
-#             'category':"the category",
-#             'title':"the title",
-#             'body':"the body",
-#             'id':1
-#             }
-#         self.index.add(**helptext)
-#         results = self.index.find(q='body')
-#         self.assertEquals(results.total, 1)
-#         result = results[0]
+    def testAdd(self):
+        helptext = {
+            'category':"the category",
+            'name':"the title",
+            'body':"the body",
+            'url': "/cat/name/"
+            }
+        self.index.add(**helptext)
+        results = self.index.find(query='body')
+        self.assertEquals(results.total, 1)
+        result = results[0]
 
-#         self.assertEquals(result['title'], 'the title')
-#         self.assertEquals(result['category'], 'the category')
-#         self.assertEquals(result['category'], 'the category')
+        self.assertEquals(result['name'], 'the title')
+        self.assertEquals(result['category'], 'the category')
+        self.assertEquals(result['category'], 'the category')
         
-#         # adding with same id should ovewrite
-#         self.index.add(**helptext)
-#         result = self.index.find(q='body')
-#         self.assertEquals(result.total, 1)
+        # adding with same id should ovewrite
+        self.index.add(**helptext)
+        result = self.index.find(query='body')
+        self.assertEquals(result.total, 1)
         
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,6 @@
 #!/usr/bin/python
+import logging
+
 from flask import request
 from flask import render_template
 from flask import redirect
@@ -124,7 +126,13 @@ def edit_topic(system, key_name):
 ##########
 @app.route('/search/')
 def search():
-    return None
+    logging.info('searhing')
+    import index
+    query = request.args.get('q', '')
+    page = request.args.get('page')
+    page = int(page) if page else 1
+    results = index.find(query=query, page=page)
+    return render_template('search.html', results=results, page=page, query=query)
 
 if __name__ == '__main__':
     app.run()
