@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block body %}
+<h2>Cabo Help</h2>
+<ul>
+{%- for e in systems -%}
+<li>
+  <h3>{% if e.icon_url %}<img src="{{e.icon_url}}" alt="{{e.name}}" width="100" />{% endif %}
+    <a href="{{url_for('get_system', key_name=e.key_name)}}">{{e.name}}</a>
+  </h3>
+  <p>{{e.description}}</p>
+</li>
+</ul>
+{% endfor %}
+</ul>
+{% endblock %}

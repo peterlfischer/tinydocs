@@ -1,0 +1,15 @@
+{% extends 'base.html'%}
+{% block body %}
+{% from "_formhelpers.html" import render_field %}
+<form method="post" action="" >
+  <dl>
+    {{ render_field(form.category) }}
+    {{ render_field(form.name) }}
+    {{ render_field(form.published) }}
+    {{ render_field(form.login_required) }}
+    {{ render_field(form.body) }}
+    {{ render_field(form.system) }}
+  </dl>
+  <p><input type="submit" value="Save Topic"></p>
+</form>
+{% endblock %}

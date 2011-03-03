@@ -1,0 +1,12 @@
+{% extends 'base.html'%}
+{% block body %}
+{% from "_formhelpers.html" import render_field %}
+<form method="post" action="" >
+  <dl>
+    {{ render_field(form.name) }}
+    {{ render_field(form.description) }}
+    {{ render_field(form.icon_url) }}
+  </dl>
+  <p><input type="submit" value="Save System"></p>
+</form>
+{% endblock %}
