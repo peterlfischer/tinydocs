@@ -1,74 +1,43 @@
 import re
-from os import path
-from os import environ
+from flask import g
+from flask import abort
+from flask import redirect
+from flask import url_for
 
-from jinja2 import Environment
-from jinja2 import FileSystemLoader
+from functools import wraps
 
-from werkzeug import Response
-from werkzeug.exceptions import NotFound
-from werkzeug.exceptions import BadRequest
-from werkzeug.routing import Map
-from werkzeug.routing import Rule
+_punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
 
-from werkzeug import Local
-from werkzeug import LocalManager
-
-from sqlalchemy import MetaData
-from sqlalchemy.orm import create_session, scoped_session
-from sqlalchemy.ext import declarative
-
-STATIC_PATH = path.join(path.dirname(__file__), 'static')
-TEMPLATE_PATH = path.join(path.dirname(__file__), 'templates')
-MOUNT_POINT = ''
-
-local = Local()
-local_manager = LocalManager([local])
-application = local('application')
-
-Base = declarative.declarative_base()
-
-metadata = MetaData()
-
-url_map = Map()
-
-Session = scoped_session(lambda: create_session(application.database_engine,
-                         autocommit=False, autoflush=False),
-                         local_manager.get_ident)
-
-jinja_env = Environment(loader=FileSystemLoader(TEMPLATE_PATH))
-
-def expose(rule, **kw):
-    def decorate(f):
-        kw['endpoint'] = f.__name__
-        url_map.add(Rule(rule, **kw))
-        return f
-    return decorate
-
-def url_for(endpoint, _external=False, **values):
-    return local.url_adapter.build(endpoint, values, force_external=_external)
-
-def is_staff():
-    from models import User
-    return User.is_staff()
-
-jinja_env.globals['url_for'] = url_for
-jinja_env.globals['is_staff'] = is_staff
-
-def require_staff(handler):
-    def staff_required_wrapper(request, *args, **kw):
-        from models import User
-        if not is_staff():
-            raise BadRequest('Authentication required')
-        return handler(request, *args, **kw)            
-    return staff_required_wrapper
+def slugify(text, delim=u'-'):
+    """Generates an ASCII-only slug."""
+    import translitcodec
+    result = []
+    for word in _punct_re.split(text.lower()):
+        word = word.encode('translit/long')
+        if word:
+            result.append(word)
+    return unicode(delim.join(result))
 
 def get_object_or_404(type, primarykey):
-    o = Session.query(type).get(primarykey)
+    from tiny import db
+    o = db.query(type).get(primarykey)
     if not o:
-        raise NotFound("No object with that key!")
+        abort("No object with that key!")
     return o
 
-def render_template(template, **context):
-    return Response(jinja_env.get_template(template).render(**context),
-                    mimetype='text/html')
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if g.user is None:
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# def require_staff(handler):
+#     def staff_required_wrapper(request, *args, **kw):
+#         from models import User
+#         if not is_staff():
+#             raise BadRequest('Authentication required')
+#         return handler(request, *args, **kw)            
+#     return staff_required_wrapper
+

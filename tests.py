@@ -1,105 +1,97 @@
 #!/usr/bin/python
-import os
+import tiny
 import unittest
-import simplejson
-import shutil
 
-from werkzeug import EnvironBuilder
-from werkzeug import Request
-from werkzeug import Client
-from werkzeug import BaseResponse
+from models import Topic
+from models import System
+from models import db
 
-from models import Documentation
-from models import User
-
-import index
-
-os.environ['MODE'] = 'test'
-os.environ['REMOTE_USER'] = 'dam'
-
-index.INDEX_PATH = "test_index"
-
-from application import Docs
-app = Docs("sqlite:///docs.db")
-
-class DocumentationHandlerTest(unittest.TestCase):
+class SystemsHandlerTest(unittest.TestCase):
 
     def setUp(self):
-        self.doc = Documentation()
-        self.doc.category = u'acategory'
-        self.doc.title = u'adoc'
-        self.doc.put()
-        self.c = Client(app, BaseResponse)
+        tiny.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tiny.test.db'
+        db.create_all()
+        self.c = tiny.app.test_client()
 
     def tearDown(self):
-        self.doc.delete()
+        db.drop_all()
+
+    def test_get_new_system_form(self):
+        r = self.c.get(path="/new/")
+        self.assertEquals(r.status_code, 200)
+
+    def test_post_new_system(self):
+        r = self.c.post(path='/new/', data={'name':'the-cool-system', 'description': 'this is a cool system'})
+        self.assertEquals(r.status_code, 302)
+        s = System.query.get('the-cool-system')
+        self.assertEquals(s.name, 'the-cool-system')
+        self.assertEquals(s.key_name, 'the-cool-system')
+        self.assertEquals(s.description, 'this is a cool system')
+
+class TopicHandlerTest(unittest.TestCase):
+
+    def setUp(self):
+        tiny.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tiny.test.db'
+        db.create_all()
+        self.c = tiny.app.test_client()
+        System(name="asystem", description="adescription").put()
+
+
+    def tearDown(self):
+        db.drop_all()
     
-    def test_post_new_doc(self):
-        r = self.c.post(
-            path="/",
-            data={'body': u'the body','category': u'the category','title': u'the title'}
-            )
+    def test_add(self):
+        r = self.c.post(path="/asystem/new/", data={'body': u'the body','category': u'the category','name': u'the name'})
         self.assertEquals(r.status_code, 302)
         # # check index
 
-    def test_get_edit_doc(self):
-        r = self.c.get(
-            path="/%s/edit/" % (self.doc.id),
-            data={'id': self.doc.id}
-            )
-        self.assertTrue('acategory' in r.data)
-        self.assertTrue('adoc' in r.data)
+    def test_edit_form(self):
+        t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
+        r = self.c.get(path=t.url + 'edit/')
+        self.assertEquals(r.status_code, 200)
+        self.assertTrue('abody' in r.data)
+        self.assertTrue('foo' in r.data)
+        self.assertTrue('cat' in r.data)
+        self.assertTrue('asystem' in r.data)
 
-    def test_get_docs(self):
-        r = self.c.get(path="/")
-        self.assertFalse(r.data == None)
-        self.assertTrue('acategory' in r.data)
-
-    def test_put_doc(self):
-        r = self.c.post(
-            path="/%s/" % self.doc.id,
-            data= {'body': u'new body',
-                   'category': u'new category',
-                   'title': u'new title'})
+    def test_edit(self):
+        t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
+        r = self.c.post(path=t.url + 'edit/',
+                        data={'body': u'new body','category': u'new category', 'name': u'new name'})
         self.assertEquals(r.status_code, 302)
-        self.assertTrue(r.data)
+        self.assertEquals(r.headers.get('location'), 'http://new-category/new-name/')
 
-    def test_get_body_doc(self):
-        r = self.c.get(path="/%s/body/" % self.doc.id)
-        self.assertTrue(r.data)
-        self.assertTrue('adoc' in r.data)
+# class SearchIndexTest(unittest.TestCase):
 
-class SearchIndexTest(unittest.TestCase):
+#     def setUp(self):
+#         # remove the index by deleting it
+#         if os.path.exists(index.INDEX_PATH):
+#             shutil.rmtree(index.INDEX_PATH)
+#         self.index = index.Index()
 
-    def setUp(self):
-        # remove the index by deleting it
-        if os.path.exists(index.INDEX_PATH):
-            shutil.rmtree(index.INDEX_PATH)
-        self.index = index.Index()
+#     def tearDown(self):
+#         pass
 
-    def tearDown(self):
-        pass
+#     def testAdd(self):
+#         helptext = {
+#             'category':"the category",
+#             'title':"the title",
+#             'body':"the body",
+#             'id':1
+#             }
+#         self.index.add(**helptext)
+#         results = self.index.find(q='body')
+#         self.assertEquals(results.total, 1)
+#         result = results[0]
 
-    def testAdd(self):
-        helptext = {
-            'category':"the category",
-            'title':"the title",
-            'body':"the body",
-            'id':1
-            }
-        self.index.add(**helptext)
-        results = self.index.find(q='body')
-        self.assertEquals(results.total, 1)
-        result = results[0]
-
-        self.assertEquals(result['title'], 'the title')
-        self.assertEquals(result['category'], 'the category')
-        self.assertEquals(result['category'], 'the category')
+#         self.assertEquals(result['title'], 'the title')
+#         self.assertEquals(result['category'], 'the category')
+#         self.assertEquals(result['category'], 'the category')
         
-        # adding with same id should ovewrite
-        self.index.add(**helptext)
-        result = self.index.find(q='body')
-        self.assertEquals(result.total, 1)
+#         # adding with same id should ovewrite
+#         self.index.add(**helptext)
+#         result = self.index.find(q='body')
+#         self.assertEquals(result.total, 1)
         
 if __name__ == '__main__':
     unittest.main()

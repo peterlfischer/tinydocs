@@ -15,46 +15,33 @@
   <body class="tundra docs" style="height: 495px;width:100%">
 
     <div style="margin: 20px" id="search">
-      <a href="{{ url_for('docs') }}">Overview</a>
-      <a href="{{ url_for('form') }}">Add</a>
+      <ul id="navigation">
+        <li><a href="{{ url_for('get_systems') }}">Overview</a></li>
+        <li><a href="{{ url_for('add_system') }}">Add System</a></li>
+        {% block navigation %}{% endblock %}
+      </ul>
 
       <form action="{{ url_for('search') }}" style="float:right">
-        <span id="help_8" class="helpTooltip" style="opacity:0"></span>
         <input type="text" name="q" value="{{query}}" />
         <input type="submit" value="search" class="dijitButtonNode" />
       </form>
+
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
       {% block body %}{% endblock %}  
       <div id="toaster">
       </div>
    </div>
 
-    <script src="js/steamengine/docs.js"></script>
-    <script src="js/steamengine/enginedoc.js"></script>
-    <script>
-      var isIframe = window.top !== this;
-
-      dojo.query('a').onclick(function(e){
-        // are we in an iframe?
-        if(isIframe){
-          e.preventDefault();
-          if(dojo.isIE){
-             parent.location.hash = '_help/' + this.pathname;
-          }
-          else{
-             parent.location.hash = '_help' + this.pathname;
-          }
-        }
-      });
-
-      dojo.ready(function(){
-        dojo.query('.helpTooltip').helpTooltip();
-        var toaster = new dojox.widget.Toaster({
-            id: 'dojoToaster',
-            positionDirection: "bl-up",
-            messageTopic : "message"
-        },
-        dojo.byId('toaster'));
-      });
-     </script>
   </body>
 </html>

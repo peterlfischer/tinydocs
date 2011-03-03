@@ -1,56 +1,93 @@
 #!/usr/bin/python
-from datetime import datetime
-
-from sqlalchemy import Table
 from sqlalchemy import Column
-from sqlalchemy import MetaData
-from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Text
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
-from sqlalchemy import create_engine
+from sqlalchemy import func
 
-from sqlalchemy.orm import create_session
-from sqlalchemy.orm import scoped_session
-from sqlalchemy.orm import dynamic_loader
+from sqlalchemy.exc import IntegrityError
 
-from helpers import url_for
-from helpers import Session
-from helpers import Base
+from flaskext.sqlalchemy import SQLAlchemy
+from flask import url_for
 
-import index
+from helpers import slugify
+from config import app
+db = SQLAlchemy(app)
 
-class Documentation(Base):
-    __tablename__ = u'documentation'
 
-    id = Column('id', Integer, primary_key=True)
+class Error(Exception):
+    pass
+
+class TinyDocsModel():
+
+    key_name = Column('key_name', String(256), primary_key=True)
+    name = Column('name', String(256), nullable=False)
+    created = Column('created', DateTime, default=func.current_timestamp())
+    updated = Column('updated', DateTime, onupdate=func.current_timestamp())
+    created_by = Column('created_by', String(70))
+    updated_by = Column('updated_by', String(70))
+
+    def __init__(self, **kwargs):
+        [setattr(self, k, v) for k,v in kwargs.iteritems()]
+        
+    def __unicode__(self):
+        name = self.name
+        if name is None:
+            name = u""
+        return u'%s' % (name,)
+
+    def put(self):
+        try:
+            self.key_name = self.get_key_name()
+            db.session.add(self)
+            db.session.commit()
+            return self
+        except IntegrityError:
+            raise Error("Hey dude, %s already present!" % self.key_name)
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+        return self
+
+class Topic(TinyDocsModel, db.Model):
+
+    __tablename__ = u'topic'
+ 
     body = Column('body', Text)
-    category = Column('category', String(256))
-    title = Column('title', String(256))
+    system = Column('system', String(20), nullable=False)
+    category = Column('category', String(256), nullable=False)
+    published = Column('published', Boolean)
+    login_required = Column('login_required', Boolean)
 
-    def __init__(self, body=u'', category=u'', title=u''):
-        self.body = body
-        self.category = category
-        self.title = title
+    def get_key_name(self):
+        return "%s/%s" % (slugify(self.category),slugify(self.name))  
 
     @property
     def url(self):
-        return '/%s/' % self.id
+        return '/%s/%s/' % (self.system, self.key_name)
+        # return url_for('get_topic', system=self.system, key_name=self.key_name)
 
-    def put(self):
-        Session.add(self)
-        Session.commit()
-        index.add(body=self.body, category=self.category, title=self.title, id=self.id, url=self.url)
-        return self
-        
-    def delete(self):
-        Session.delete(self)
-        Session.commit()
-        return self
+class System(TinyDocsModel, db.Model):
 
-    def __repr__(self):
-        return '<Documentation %r %r:%r>' % (self.id, self.category, self.title)
+    __tablename__ = u'system'
+
+    description = Column('description', String(256))
+    icon_url = Column('icon_url', String)
+    published = Column('published', Boolean)
+    login_required = Column('login_required', Boolean)
+
+    @property
+    def topics(self):
+        return Topic.query.filter_by(system=self.key_name).order_by(Topic.category)
+
+    @property
+    def url(self):
+        return url_for('get_system', key_name=self.key_name)
+
+    def get_key_name(self):
+        return "%s" % slugify(self.name)
 
 class User(object):
 
