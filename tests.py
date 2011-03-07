@@ -72,7 +72,6 @@ class SearchIndexTest(unittest.TestCase):
         # remove the index by deleting it
         if os.path.exists(config.INDEX_PATH):
             shutil.rmtree(config.INDEX_PATH)
-        self.index = index.Index()
 
     def tearDown(self):
         pass
@@ -84,18 +83,17 @@ class SearchIndexTest(unittest.TestCase):
             'body':"the body",
             'url': "/cat/name/"
             }
-        self.index.add(**helptext)
-        results = self.index.find(query='body')
+        index.add(**helptext)
+        results = index.find(query='body')
         self.assertEquals(results.total, 1)
         result = results[0]
 
         self.assertEquals(result['name'], 'the title')
         self.assertEquals(result['category'], 'the category')
-        self.assertEquals(result['category'], 'the category')
         
         # adding with same id should ovewrite
-        self.index.add(**helptext)
-        result = self.index.find(query='body')
+        index.add(**helptext)
+        result = index.find(query='body')
         self.assertEquals(result.total, 1)
         
 if __name__ == '__main__':

@@ -94,12 +94,16 @@ class Topic(TinyDocsModel, db.Model):
 
     @property
     def permalink(self):
-        return url_for('get_topic_by_uid', uid=self.uid)
-        
+        return '/topics/%s' % self.uid
+
+    @property
+    def tooltip_permalink(self):
+        return '/plugin/%s' % (self.uid)
+    
     def put(self):
         import index
         super(Topic, self).put()
-        index.add(body=self.body, category=self.category, name=self.name, url=self.url)
+        index.add(body=self.body, category=self.category, name=self.name, url=self.permalink)
         return self
 
 class System(TinyDocsModel, db.Model):

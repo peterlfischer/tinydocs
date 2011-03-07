@@ -6,7 +6,11 @@
   {{ render_sidebar(system) }}
 </div>
 <div class="grid_9">
-  <div style="float:right"><a href="{{o.permalink}}">permalink</a></div>
+  <div>
+    <a href="{{o.permalink}}">permalink</a> |
+    <span>As tooltip: <iframe src="{{o.tooltip_permalink}}" style="position:absolute;display:inline"></iframe></span>
+  </div>
+    
   <h2>{{o.name}}</h2>
   <div>{{o.body|safe}}</div>
   <div class="admin">

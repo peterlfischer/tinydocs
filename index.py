@@ -52,7 +52,6 @@ class Index(object):
         self.ix.merge()
 
     def find(self, page=1, query=""):
-        logging.info('index::find querying for: %s' % query)
         query = unicode(query)
         query = MultifieldParser(['body', 'name', 'category'], schema=index_schema).parse(query)
         searcher = self.ix.searcher()

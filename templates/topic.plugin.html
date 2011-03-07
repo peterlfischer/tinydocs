@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Steam Engine | Documentation</title>
+    <style>
+@import url("//ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/resources/dojo.css");
+@import url("//ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/tundra/tundra.css");
+.tooltip .dijitButtonNode {background:none;padding:0;margin:1px 2px 2px 2px;border:none;height:auto;width:16px;}
+.tooltip .dijitButtonText, .tooltip .dijitArrowButtonInner{display: none;}
+.tooltipIcon {background: url("/static/img/questionmark.png") no-repeat 0 0 transparent;height: 16px;width: 16px;vertical-align: top;}
+    </style>
+    <script src="//ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" djConfig="parseOnLoad:true"></script>
+    <script>
+  dojo.require('dijit.form.DropDownButton');
+  dojo.require('dijit.TooltipDialog');
+    </script>
+  </head>
+  <body class="tundra" style="position: absolute;">
+    <div dojoType="dijit.form.DropDownButton" baseClass="tooltip" iconClass="tooltipIcon">
+      <span style="display:none">
+        {{o.name}}
+      </span>
+      <div style="display:none" dojoType="dijit.TooltipDialog">
+        {{o.body|safe}}
+      </div>
+    </div>
+  </body>
+</html>

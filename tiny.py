@@ -107,12 +107,27 @@ def edit_system(key_name):
 #################
 @app.route('/topics/<uid>', methods=['GET'])
 def get_topic_by_uid(uid):
-    return get(Type=Topic, obj=Topic.query.filter_by(uid=uid).first_or_404())
+    obj = Topic.query.filter_by(uid=uid).first_or_404()
+    return redirect(obj.url)
+
+@app.route('/plugin/<uid>', methods=['GET'])
+def get_topic_plugin_uid(uid):
+    obj = Topic.query.filter_by(uid=uid).first_or_404()
+    return render_template("topic.plugin.html", o=obj)
 
 @app.route('/<system_key_name>/<category>/<name>', methods=['GET'])
 def get_topic(system_key_name, category, name):
     key_name = '%s/%s/%s' % (system_key_name, category, name)
     return get(Type=Topic, key_name=key_name)
+
+@app.route('/<system_key_name>/<category>/<name>/body', methods=['GET'])
+def get_topic_body(system_key_name, category, name):
+    key_name = '%s/%s/%s' % (system_key_name, category, name)
+    obj = get(Type=Topic, key_name=key_name)
+    return """<div>
+  <h2>%s</h2>
+  <div>%s</div>
+</div>""" % (obj.name, obj.body)
 
 @app.route('/<system_key_name>/new', methods=['GET', 'POST'])
 def add_topic(system_key_name):
@@ -137,7 +152,6 @@ def edit_topic(system_key_name, category, name):
 ##########
 @app.route('/search/')
 def search():
-    logging.info('searhing')
     import index
     query = request.args.get('q', '')
     page = request.args.get('page')
