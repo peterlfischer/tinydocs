@@ -3,6 +3,7 @@
 DROP TABLE IF EXISTS `topic`;
 CREATE TABLE `topic` (
   key_name string primary key,  
+  uid string unique,
 
   created text,
   created_by text,
@@ -22,6 +23,7 @@ CREATE TABLE `topic` (
 DROP TABLE IF EXISTS `system`;
 CREATE TABLE `system` (
   key_name string primary key,  
+  uid string unique,
 
   created text,
   created_by text,

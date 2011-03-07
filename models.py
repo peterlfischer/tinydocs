@@ -1,6 +1,9 @@
 #!/usr/bin/python
 from sqlalchemy import Column
 from sqlalchemy import String
+from random import sample
+from random import randrange
+
 from sqlalchemy import Text
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
@@ -15,13 +18,18 @@ from helpers import slugify
 from config import app
 db = SQLAlchemy(app)
 
-
 class Error(Exception):
     pass
 
+
+URL_CHARS = 'abcdefghijkmpqrstuvwxyzABCDEFGHIJKLMNPQRST23456789'
+def get_random_uid():
+    return ''.join(sample(URL_CHARS, randrange(3, 9)))
+
 class TinyDocsModel():
 
-    key_name = Column('key_name', String(256), primary_key=True)
+    key_name = Column('key_name', String(10), primary_key=True)
+    uid = Column('uid', String(10))
     name = Column('name', String(256), nullable=False)
     created = Column('created', DateTime, default=func.current_timestamp())
     updated = Column('updated', DateTime, onupdate=func.current_timestamp())
@@ -40,16 +48,28 @@ class TinyDocsModel():
     def put(self):
         try:
             self.key_name = self.get_key_name()
+            if not self.is_saved():
+                uid = None
+                while True:
+                    uid = get_random_uid()
+                    if not self.__class__.query.get(uid):
+                        break
+                self.uid = uid
             db.session.add(self)
             db.session.commit()
             return self
         except IntegrityError:
-            raise Error("Hey dude, %s already present!" % self.key_name)
+            raise Error('Hey dude, <a href="%s">%s</a> is already present!' % (self.key_name, self.key_name))
 
     def delete(self):
         db.session.delete(self)
         db.session.commit()
         return self
+
+    def is_saved(self):
+        """Returns True if the model instance has been put() into the db at least once.
+        """
+        return self.uid != None
 
 class Topic(TinyDocsModel, db.Model):
 
@@ -61,19 +81,26 @@ class Topic(TinyDocsModel, db.Model):
     published = Column('published', Boolean)
     login_required = Column('login_required', Boolean)
 
-    def get_key_name(self):
-        return "%s/%s" % (slugify(self.category),slugify(self.name))  
+    @property
+    def system_as_obj(self):
+        return System.query.get(self.system)
 
+    def get_key_name(self):
+        return '%s/%s/%s' % (self.system, slugify(self.category), slugify(self.name))
+
+    @property
+    def url(self):
+        return self.get_key_name()
+
+    @property
+    def permalink(self):
+        return url_for('get_topic_by_uid', uid=self.uid)
+        
     def put(self):
         import index
         super(Topic, self).put()
         index.add(body=self.body, category=self.category, name=self.name, url=self.url)
         return self
-        
-    @property
-    def url(self):
-        return '/%s/%s/' % (self.system, self.key_name)
-        # return url_for('get_topic', system=self.system, key_name=self.key_name)
 
 class System(TinyDocsModel, db.Model):
 
@@ -90,10 +117,12 @@ class System(TinyDocsModel, db.Model):
 
     @property
     def url(self):
-        return url_for('get_system', key_name=self.key_name)
+        if not self.is_saved():
+            return url_for('get_system', key_name=slugify(self.name))
+        return url_for('get_system', key_name=self.key_name)        
 
     def get_key_name(self):
-        return "%s" % slugify(self.name)
+        return '%s' % slugify(self.name)
 
 class User(object):
 

@@ -1,5 +1,17 @@
 {% extends 'base.html'%}
+{% from "_sidebarhelpers.html" import render_sidebar %}
 {% block body %}
-<h1>{{o.title}}</h1>
-<div>{{o.body}}</div>
+{% set system = o.system_as_obj %}
+<div class="sidebar grid_3">
+  {{ render_sidebar(system) }}
+</div>
+<div class="grid_9">
+  <div style="float:right"><a href="{{o.permalink}}">permalink</a></div>
+  <h2>{{o.name}}</h2>
+  <div>{{o.body|safe}}</div>
+  <div class="admin">
+    <a href="{{url_for('edit_topic', system_key_name=system.key_name, category=o.category, name=o.name)}}">[edit]</a>
+    <form action="{{url_for('delete_topic', system_key_name=system.key_name, category=o.category, name=o.name)}}?_method=DELETE" method="POST" style="display:inline"><input type="submit" value="[delete]" class="dijitButtonNode"></input></form>
+  </div>
+</div>
 {% endblock %}

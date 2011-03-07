@@ -1,15 +1,25 @@
 {% extends 'base.html' %}
 {% block body %}
-<h2>Cabo Help</h2>
-<ul>
+<ul class="clearfix">
 {%- for e in systems -%}
-<li>
-  <h3>{% if e.icon_url %}<img src="{{e.icon_url}}" alt="{{e.name}}" width="100" />{% endif %}
+<li class="grid_3">
+  <h3>
+    {% if e.icon_url %}
+    <a href="{{url_for('get_system', key_name=e.key_name)}}"><img src="{{e.icon_url}}" alt="{{e.name}}" width="150" /></a>
+    {% else %}
     <a href="{{url_for('get_system', key_name=e.key_name)}}">{{e.name}}</a>
+    {% endif %}
   </h3>
-  <p>{{e.description}}</p>
 </li>
-</ul>
 {% endfor %}
 </ul>
+
+<div class="admin">
+  <ul>
+    <li>
+      <a href="{{url_for('add_system')}}">[add system]</a>
+    </li>
+  </ul>
+</div>
+
 {% endblock %}

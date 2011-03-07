@@ -1,0 +1,30 @@
+{% macro render_sidebar(system) %}
+  <h2>{% if system.icon_url %}<img src="{{system.icon_url}}" alt="{{system.category}}" />{% else %}{{system.name}}{% endif %}</h2>
+  <ul>
+{% set category = 'foo' %}
+{% for t in system.topics -%}
+  {%- if category != t.category -%}
+    {%- set category = t.category -%}
+  </ul>
+  <h3>{{t.category}}</h3>
+  <ul>
+    {%- endif %}
+    <li>
+      <a href="{{url_for('get_topic', system_key_name=t.system, category=t.category, name=t.name)}}">{{t.name}}</a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <div class="admin">
+    <ul>
+      <li>
+        <a href="{{url_for('add_topic', system_key_name=system.key_name)}}">[add topic]</a>
+      </li>
+      <li>
+        <a href="{{url_for('add_system')}}">[add system]</a>
+      </li>
+      <li>
+        <a href="{{url_for('edit_system', key_name=system.key_name)}}">[edit system]</a>
+      </li>
+  </div>
+{% endmacro %}
