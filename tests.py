@@ -41,7 +41,6 @@ class TopicHandlerTest(unittest.TestCase):
         self.c = tiny.app.test_client()
         System(name="asystem", description="adescription").put()
 
-
     def tearDown(self):
         db.drop_all()
     
@@ -65,6 +64,12 @@ class TopicHandlerTest(unittest.TestCase):
                         data={'body': u'new body','category': u'new category', 'name': u'new name'})
         self.assertEquals(r.status_code, 302)
         self.assertEquals(r.headers.get('location'), 'http://localhost/new-category/new-name')
+
+    def test_get_topic_by_uid_and_jsonp(self):
+        t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
+        r = self.c.get(path='/plugin/' + t.uid + '/jsonp?callback=foo')
+        self.assertEquals(r.status_code, 200)
+        self.assertEquals(r.data, 'foo("<h2>foo</h2><div>abody</div>")')
 
 class SearchIndexTest(unittest.TestCase):
 

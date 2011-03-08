@@ -7,11 +7,13 @@ from flask import redirect
 from flask import url_for
 from flask import flash
 from flask import abort
+from flask import Response
 
 from models import Topic
 from models import System
 from models import Error
 
+import json
 import forms
 
 from config import app
@@ -105,15 +107,26 @@ def edit_system(key_name):
 #################
 # Topics Handlers
 #################
+# For cross-site use
+@app.route('/plugin/<uid>/jsonp', methods=['GET'])
+def get_topic_by_uid_and_jsonp(uid):
+    """Gets topic by JSONP"""  
+    obj = Topic.query.filter_by(uid=uid).first_or_404()
+    callback = request.args.get('callback')
+    data = json.dumps("""<h2>%s</h2><div>%s</div>""" % (obj.name, obj.body))
+    return Response(response='%s(%s)' % (callback, data), mimetype='application/json')
+
+@app.route('/plugin/<uid>', methods=['GET'])
+def get_topic_plugin_by_uid(uid):
+    """Renders a tooltip button for use in iframes."""
+    obj = Topic.query.filter_by(uid=uid).first_or_404()
+    return render_template("topic.plugin.html", o=obj)
+
+# For normal use
 @app.route('/topics/<uid>', methods=['GET'])
 def get_topic_by_uid(uid):
     obj = Topic.query.filter_by(uid=uid).first_or_404()
     return redirect(obj.url)
-
-@app.route('/plugin/<uid>', methods=['GET'])
-def get_topic_plugin_uid(uid):
-    obj = Topic.query.filter_by(uid=uid).first_or_404()
-    return render_template("topic.plugin.html", o=obj)
 
 @app.route('/<system_key_name>/<category>/<name>', methods=['GET'])
 def get_topic(system_key_name, category, name):
