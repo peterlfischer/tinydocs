@@ -28,7 +28,7 @@ def get_random_uid():
 
 class TinyDocsModel():
 
-    key_name = Column('key_name', String(10), primary_key=True)
+    key_name = Column('key_name', String(256), primary_key=True)
     uid = Column('uid', String(10))
     name = Column('name', String(256), nullable=False)
     created = Column('created', DateTime, default=func.current_timestamp())
@@ -90,7 +90,7 @@ class Topic(TinyDocsModel, db.Model):
 
     @property
     def url(self):
-        return self.get_key_name()
+        return '/%s' % self.get_key_name()
 
     @property
     def permalink(self):
@@ -111,7 +111,7 @@ class System(TinyDocsModel, db.Model):
     __tablename__ = u'system'
 
     description = Column('description', String(256))
-    icon_url = Column('icon_url', String)
+    icon_url = Column('icon_url', String(256))
     published = Column('published', Boolean)
     login_required = Column('login_required', Boolean)
 

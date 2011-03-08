@@ -1,12 +1,14 @@
 from flask import Flask
 import os
-DEBUG = True
-SECRET_KEY = 'development key'
-USERNAME = 'admin'
-PASSWORD = 'default'
-SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/tiny.db'
-INDEX_PATH = os.path.join(os.path.dirname(__name__), 'test_index') 
+import sys
+
+# To enable production state do this:
+# $ export TINYDOCS_SETTINGS=./settings.prod.cfg
 
 app = Flask('tiny')
-app.config.from_object('config')
+if os.environ.get('TINYDOCS_SETTINGS'):
+    app.config.from_envvar('TINYDOCS_SETTINGS')    
+else:
+    app.config.from_pyfile('settings.dev.cfg')
 
+    

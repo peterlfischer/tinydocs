@@ -1,5 +1,5 @@
 {% macro render_sidebar(system) %}
-  <h2>{% if system.icon_url %}<img src="{{system.icon_url}}" alt="{{system.category}}" />{% else %}{{system.name}}{% endif %}</h2>
+  <h2><a href="{{system.url}}">{% if system.icon_url %}<img src="{{system.icon_url}}" alt="{{system.category}}" />{% else %}{{system.name}}{% endif %}</a></h2>
   <ul>
 {% set category = 'foo' %}
 {% for t in system.topics -%}
@@ -10,7 +10,7 @@
   <ul>
     {%- endif %}
     <li>
-      <a href="{{url_for('get_topic', system_key_name=t.system, category=t.category, name=t.name)}}">{{t.name}}</a>
+      <a href="{{t.url}}">{{t.name}}</a>
     </li>
     {% endfor %}
   </ul>

@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <title>Steam Engine | Documentation</title>
     <style>
-@import url("//ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/resources/dojo.css");
 @import url("//ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/tundra/tundra.css");
 .tooltip .dijitButtonNode {background:none;padding:0;margin:1px 2px 2px 2px;border:none;height:auto;width:16px;}
 .tooltip .dijitButtonText, .tooltip .dijitArrowButtonInner{display: none;}
@@ -21,8 +20,9 @@
       <span style="display:none">
         {{o.name}}
       </span>
-      <div style="display:none" dojoType="dijit.TooltipDialog">
-        {{o.body|safe}}
+      <div style="display:none;width:300px" dojoType="dijit.TooltipDialog">
+        <h3>{{o.name}}</h3>
+        <p>{{o.body|safe}}</p>
       </div>
     </div>
   </body>
