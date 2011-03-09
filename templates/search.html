@@ -19,11 +19,9 @@ Your search didn't return any results
 </ul>
 {% endif %}
 <div style="width:100%;text-align:center;">
+  Pages:
 {%- for p in range(results.pagecount) %}
-  {%- if p > 1 %}
-<a href="{{query}}&page={{p}}">{{page}}</a>
-  {%- endif %}
+  <a href="?q={{query}}&page={{p+1}}">{{p+1}}</a>
 {%- endfor %}
-</ul>
 </div>
 {% endblock %}

@@ -81,6 +81,17 @@ def edit(Type=None, key_name=None, form=None, **kwargs):
     return render_template("%s_form.html" % Type.__name__.lower(), form=form, **kwargs)
 
 ##################
+# Admin Handlers
+##################
+@app.route('/admin/reindex', methods=['POST'])
+def reindex():
+    import index
+    index.remove()
+    index.populate()
+    flash('Removed existing index and created new!')
+    return redirect(request.headers['referer'])
+    
+##################
 # Systems Handlers
 ##################
 @app.route('/', methods=['GET'])
