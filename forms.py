@@ -4,6 +4,7 @@ from flaskext.wtf import TextAreaField
 from flaskext.wtf import Required
 from flaskext.wtf import BooleanField
 from flaskext.wtf import HiddenField
+from flaskext.wtf.widget import TextArea
 
 from helpers import slugify
 

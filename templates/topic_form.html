@@ -12,7 +12,7 @@
       {{ render_field(form.name) }}
       {#{ render_field(form.published) }#}
       {#{ render_field(form.login_required) }#}
-      {{ render_field(form.body) }}
+      {{ render_field(form.body, cols=80, rows=20) }}
       {{ render_field(form.system) }}
     </dl>
     <p><input type="submit" value="Save Topic"></p>
