@@ -1,54 +1,29 @@
 {% extends 'base.html'%}
 {% from "_sidebarhelpers.html" import render_sidebar %}
 {% block body %}
-    <style>
-@import url("//ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/tundra/tundra.css");
-    </style>
-    <script src="//ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" djConfig="parseOnLoad:true"></script>
-    <script>
+<style>
+  @import url("//ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/tundra/tundra.css");
+</style>
+<script src="//ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" djConfig="parseOnLoad:true"></script>
+<script>
   dojo.require('dijit.Dialog');
   dojo.require('dojo.io.script');
   dojo.require('dijit.form.Button');
-    </script>
+</script>
 {% set system = o.system_as_obj %}
-<div class="sidebar grid_3">
+<aside class="sidebar grid_3">
   {{ render_sidebar(system) }}
-</div>
-<div class="grid_9">
-  <div>
-    <a href="{{o.permalink}}">permalink</a>
-  </div>
-
-
-<!-- dojo.require(&quot;dojo.io.script&quot;); -->
- 
-<!--   function searchGoogle() { -->
-<!--     //Look up the node we'll stick the text under. -->
-<!--     var targetNode = dojo.byId(&quot;results&quot;); -->
- 
-<!--     //The parameters to pass to xhrGet, the url, how to handle it, and the callbacks. -->
-<!--     var jsonpArgs = { -->
-<!--       url: &quot;http://ajax.googleapis.com/ajax/services/search/web&quot;, -->
-<!--       callbackParamName: &quot;callback&quot;, -->
-<!--       content: { -->
-<!--         v: &quot;1.0&quot;, -->
-<!--         q: &quot;dojo toolkit&quot; -->
-<!--       }, -->
-<!--       load: function(data){ -->
-<!--         //Set the data from the search into the viewbox in nicely formatted JSON -->
-<!--         targetNode.innerHTML = &quot;&lt;pre&gt;&quot; + dojo.toJson(data, true) + &quot;&lt;/pre&gt;&quot;; -->
-<!--       }, -->
-<!--       error: function(error){ -->
-<!--         targetNode.innerHTML = &quot;An unexpected error occurred: &quot; + error; -->
-<!--       } -->
-<!--     }; -->
-<!--     dojo.io.script.get(jsonpArgs); -->
-<!--   } -->
-<!--   dojo.addOnLoad(searchGoogle); -->
+</aside>
+<article class="grid_9">
+  <section class="topic">
+    <div style="float:right">
+      <a href="{{o.permalink}}">permalink</a>
+    </div>
+    <h2>{{o.name}}</h2>
+    <div>{{o.body|safe}}</div>
+  </section>
   
-  <h2>{{o.name}}</h2>
-  <div>{{o.body|safe}}</div>
-  <div class="admin">
+  <section class="admin">
     <a href="{{o.url}}/edit">[edit]</a>
 
     <form action="{{url_for('delete_topic', system_key_name=system.key_name, category=o.category, name=o.name)}}?_method=DELETE" method="POST" style="display:inline">
@@ -75,6 +50,6 @@
     </button>
 
     <span>As tooltip: <iframe src="{{o.tooltip_permalink}}" style="position:absolute" width="320" height="100%" ></iframe></span>
-  </div>
-</div>
+  </section>
+</article>
 {% endblock %}

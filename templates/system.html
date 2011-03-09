@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 {% from "_sidebarhelpers.html" import render_sidebar %}
-
 {% block body %}
-<div class="sidebar grid_3">
+<aside class="sidebar grid_3">
   {{ render_sidebar(o) }}
-</div>
-<div class="grid_9">
+</aside>
+<article class="grid_9">
   {{o.description|safe}}
-</div>
+</article>
 {% endblock %}
