@@ -184,4 +184,8 @@ def search():
     return render_template('search.html', results=results, page=page, query=query)
 
 if __name__ == '__main__':
+    import os
+    if not os.path.exists(app.config['DATABASE_FILE']):
+        from models import db
+        db.create_all()
     app.run()
