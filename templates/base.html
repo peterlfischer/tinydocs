@@ -27,22 +27,20 @@
     </nav>
 
     <div id="wrapper">
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <section class="container_12 clearfix">
-      <ul class="flashes grid_12">
-    {% for category, message in messages %}
-        <li class="{{ category }}">{{ message | safe}}</li>
-    {% endfor %}
-      </ul>
-    </section>
-  {% endif %}
-{% endwith %}
-
-    <section class="container_12 clearfix">
-      {% block body %}{% endblock %}  
-    </section>
-
+    {%- with messages = get_flashed_messages(with_categories=true) -%}
+      {%- if messages -%}
+      <section class="container_12 clearfix">
+        <ul class="flashes grid_12">
+        {%- for category, message in messages -%}
+          <li class="{{ category }}">{{ message | safe}}</li>
+        {%- endfor -%}
+        </ul>
+      </section>
+      {%- endif -%}
+    {% endwith %}
+      <section class="container_12 clearfix">
+        {% block body %}{% endblock %}  
+      </section>
     </div>
 
     <footer>
