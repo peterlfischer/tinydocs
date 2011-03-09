@@ -20,7 +20,7 @@ Create a virtual environment where tinydocs dependencies will live::
 
 Install tinydocs project dependencies::
 
-    (tinydocs)$ pip install -r requirements/project.txt
+    (tinydocs)$ pip install -r requirements/development.txt
 
 If you are setting up a production environment use
 ``requirements/production.txt`` instead.
