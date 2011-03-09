@@ -14,7 +14,9 @@ from os import chown
 from os import listdir
 from os import mkdir
 
-from config import INDEX_PATH
+
+from config import app
+INDEX_PATH = app.config.get('INDEX_PATH')
 import shutil
 import pwd
 

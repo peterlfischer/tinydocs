@@ -166,11 +166,12 @@ def edit_topic(system_key_name, category, name):
 @app.route('/search/')
 def search():
     import index
-    query = request.args.get('q', '')
-    page = request.args.get('page')
-    page = int(page) if page else 1
-    results = index.find(query=query, page=page)
-    return render_template('search.html', results=results, page=page, query=query)
+    return Response("foo")
+    # query = request.args.get('q', '')
+    # page = request.args.get('page')
+    # page = int(page) if page else 1
+    # results = index.find(query=query, page=page)
+    # return render_template('search.html', results=results, page=page, query=query)
 
 if __name__ == '__main__':
     app.run()

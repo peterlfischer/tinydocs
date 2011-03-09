@@ -63,20 +63,20 @@ class TopicHandlerTest(unittest.TestCase):
         r = self.c.post(path=t.url + '/edit',
                         data={'body': u'new body','category': u'new category', 'name': u'new name'})
         self.assertEquals(r.status_code, 302)
-        self.assertEquals(r.headers.get('location'), 'http://localhost/new-category/new-name')
+        self.assertTrue('/new-category/new-name' in r.headers.get('location'))
 
     def test_get_topic_by_uid_and_jsonp(self):
         t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
         r = self.c.get(path='/plugin/' + t.uid + '/jsonp?callback=foo')
         self.assertEquals(r.status_code, 200)
-        self.assertEquals(r.data, 'foo("<h2>foo</h2><div>abody</div>")')
+        self.assertEquals(r.data, 'foo({"body": "abody", "name": "foo"})')
 
 class SearchIndexTest(unittest.TestCase):
 
     def setUp(self):
         # remove the index by deleting it
-        if os.path.exists(config.INDEX_PATH):
-            shutil.rmtree(config.INDEX_PATH)
+        if os.path.exists(tiny.app.config['INDEX_PATH']):
+            shutil.rmtree(tiny.app.config['INDEX_PATH'])
 
     def tearDown(self):
         pass
