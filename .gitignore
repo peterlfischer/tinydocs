@@ -1,6 +1,6 @@
 CVS
 *.pyc
-indexes
-docs.db
+indexes/production
+indexes/development
 .ropeproject
 tinydocs.dev.db
