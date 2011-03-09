@@ -29,5 +29,5 @@ Running a web server
 --------------------
 In development you should run::
 
-    (tinydocs)$ python tiny.py
+    (tinydocs)$ python tinydocs.py
 

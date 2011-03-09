@@ -5,7 +5,7 @@ import unittest
 
 import config
 import index
-import tiny
+import tinydocs
 
 from models import Topic
 from models import System
@@ -14,9 +14,9 @@ from models import db
 class SystemsHandlerTest(unittest.TestCase):
 
     def setUp(self):
-        tiny.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tiny.test.db'
+        tinydocs.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tinydocs.test.db'
         db.create_all()
-        self.c = tiny.app.test_client()
+        self.c = tinydocs.app.test_client()
 
     def tearDown(self):
         db.drop_all()
@@ -36,9 +36,9 @@ class SystemsHandlerTest(unittest.TestCase):
 class TopicHandlerTest(unittest.TestCase):
 
     def setUp(self):
-        tiny.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tiny.test.db'
+        tinydocs.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tinydocs.test.db'
         db.create_all()
-        self.c = tiny.app.test_client()
+        self.c = tinydocs.app.test_client()
         System(name="asystem", description="adescription").put()
 
     def tearDown(self):
@@ -75,8 +75,8 @@ class SearchIndexTest(unittest.TestCase):
 
     def setUp(self):
         # remove the index by deleting it
-        if os.path.exists(tiny.app.config['INDEX_PATH']):
-            shutil.rmtree(tiny.app.config['INDEX_PATH'])
+        if os.path.exists(tinydocs.app.config['INDEX_PATH']):
+            shutil.rmtree(tinydocs.app.config['INDEX_PATH'])
 
     def tearDown(self):
         pass
