@@ -1,6 +1,5 @@
 CVS
 *.pyc
-test_index
-index
+indexes
 docs.db
 .ropeproject
