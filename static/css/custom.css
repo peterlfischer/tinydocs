@@ -76,8 +76,11 @@ nav a:hover{
     padding:10px;
     border:1px solid #e5e5e5;
 }
-.admin a, .sidebar li a{
+a{
     border-bottom:1px dotted #777;
+}
+h1 a, h3 a, h2 a {
+    border-bottom: none;
 }
 
 #wrapper{
