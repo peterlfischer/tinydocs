@@ -18,7 +18,8 @@
     </li>
     {%- endfor -%}
   </ul>
-
+  
+  {% if user %}
   <div class="admin">
     <ul>
       <li>
@@ -36,4 +37,5 @@
         </form>
       </li>
   </div>
+  {% endif %}
 {% endmacro %}

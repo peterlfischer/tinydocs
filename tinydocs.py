@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import logging
+import os
 
 from flask import request
 from flask import render_template
@@ -18,7 +19,26 @@ import forms
 
 from config import app
 
-###########################
+###################
+# Context processor
+###################
+@app.context_processor
+def inject_user():
+    if os.environ.get('REMOTE_USER'):
+        return dict(user=True)
+    return dict(user=None)
+
+############
+# decorators
+############
+def login_required(fn):
+    def decorated(*args, **kw):
+        if os.environ.get('REMOTE_USER'):
+            return fn(*args, **kw)
+        return Response('You need to login first!', status=400)
+    return decorated
+
+##########################
 ## generic helper-handlers
 ##########################
 def get(Type=None, key_name=None, obj=None):
@@ -31,6 +51,7 @@ def get(Type=None, key_name=None, obj=None):
         obj = Type.query.get_or_404(key_name)
     return render_template("%s.html" % Type.__name__.lower(), o=obj)
 
+@login_required
 def add(Type=None, form=None, **kwargs):
     """Adds a new object to the database and renders page.
 
@@ -49,6 +70,7 @@ def add(Type=None, form=None, **kwargs):
         flash(e, 'error')
     return render_template("%s_form.html" % Type.__name__.lower(), form=form,**kwargs)
 
+@login_required
 def delete(Type=None, key_name=None, redirect_url=None):
     """Deletes object from the database and renders page.
 
@@ -64,6 +86,7 @@ def delete(Type=None, key_name=None, redirect_url=None):
     else:
         return abort("Yo, you can't delete with that method")
 
+@login_required
 def edit(Type=None, key_name=None, form=None, **kwargs):
     """Edits object from the database and renders page.
 

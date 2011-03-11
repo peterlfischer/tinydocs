@@ -1,5 +1,7 @@
 {% extends 'base.html'%}
 {% from "_sidebarhelpers.html" import render_sidebar %}
+{% set system = o.system_as_obj %}
+{% block title %} | {{system.name}}: {{o.name}}{% endblock %}
 {% block body %}
 <style>
   @import url("//ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/tundra/tundra.css");
@@ -10,7 +12,6 @@
   dojo.require('dojo.io.script');
   dojo.require('dijit.form.Button');
 </script>
-{% set system = o.system_as_obj %}
 <aside class="sidebar grid_3">
   {{ render_sidebar(system) }}
 </aside>
@@ -22,7 +23,8 @@
     <h2>{{o.name}}</h2>
     <div>{{o.body|safe}}</div>
   </section>
-  
+
+  {% if user %}
   <section class="admin">
     <a href="{{o.url}}/edit">[edit]</a>
 
@@ -51,5 +53,6 @@
 
     <span>As tooltip: <iframe src="{{o.tooltip_permalink}}" style="position:absolute" width="320" height="100%" ></iframe></span>
   </section>
+  {% endif %}
 </article>
 {% endblock %}
