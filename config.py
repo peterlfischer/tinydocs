@@ -1,7 +1,7 @@
 from flask import Flask
 import os
 
-app = Flask('tiny')
+app = Flask('tinydocs')
 if os.environ.get('TINYDOCS_SETTINGS'):
     # We're setting that variable in the tiny.wsgi used by apache
     # Another way to enable production state do this:
