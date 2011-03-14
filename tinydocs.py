@@ -34,7 +34,7 @@ def inject_user():
 ############
 def login_required(fn):
     def decorated(*args, **kw):
-        if os.environ.get('REMOTE_USER'):
+        if request.environ.get('REMOTE_USER'):
             return fn(*args, **kw)
         return Response('You need to login first!', status=400)
     return decorated
