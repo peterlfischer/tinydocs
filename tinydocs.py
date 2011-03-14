@@ -9,6 +9,7 @@ from flask import url_for
 from flask import flash
 from flask import abort
 from flask import Response
+from flask import Flask
 
 from models import Topic
 from models import System
@@ -17,7 +18,15 @@ from models import Error
 import json
 import forms
 
-from config import app
+app = Flask(__name__)
+if os.environ.get('TINYDOCS_SETTINGS'):
+    # We're setting that variable in the tiny.wsgi used by apache
+    # Another way to enable production state do this:
+    # $ export TINYDOCS_SETTINGS=./settings.prod.cfg
+    app.config.from_envvar('TINYDOCS_SETTINGS')    
+else:
+    app.config.from_pyfile('settings.dev.cfg')
+    # os.environ['REMOTE_USER'] = 'foo'
 
 ###################
 # Context processor
