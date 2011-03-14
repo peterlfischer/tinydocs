@@ -16,6 +16,10 @@ import forms
 
 from config import app
 
+from models import System
+from models import Topic
+from models import Error
+
 ###################
 # Context processor
 ###################
@@ -116,17 +120,14 @@ def reindex():
 ##################
 @app.route('/', methods=['GET'])
 def get_systems():
-    from models import System
     return render_template('systems.html', systems=System.query.all())
 
 @app.route('/<key_name>', methods=['GET'])
 def get_system(key_name):
-    from models import System
     return get(Type=System, key_name=key_name)
 
 @app.route('/<key_name>', methods=['POST'])
 def delete_system(key_name):
-    from models import System
     url = url_for(get_systems.__name__)
     return delete(Type=System, key_name=key_name, redirect_url=url)
 
