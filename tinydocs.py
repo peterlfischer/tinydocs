@@ -11,22 +11,10 @@ from flask import abort
 from flask import Response
 from flask import Flask
 
-from models import Topic
-from models import System
-from models import Error
-
 import json
 import forms
 
-app = Flask(__name__)
-if os.environ.get('TINYDOCS_SETTINGS'):
-    # We're setting that variable in the tiny.wsgi used by apache
-    # Another way to enable production state do this:
-    # $ export TINYDOCS_SETTINGS=./settings.prod.cfg
-    app.config.from_envvar('TINYDOCS_SETTINGS')    
-else:
-    app.config.from_pyfile('settings.dev.cfg')
-    # os.environ['REMOTE_USER'] = 'foo'
+from config import app
 
 ###################
 # Context processor
@@ -128,14 +116,17 @@ def reindex():
 ##################
 @app.route('/', methods=['GET'])
 def get_systems():
+    from models import System
     return render_template('systems.html', systems=System.query.all())
 
 @app.route('/<key_name>', methods=['GET'])
 def get_system(key_name):
+    from models import System
     return get(Type=System, key_name=key_name)
 
 @app.route('/<key_name>', methods=['POST'])
 def delete_system(key_name):
+    from models import System
     url = url_for(get_systems.__name__)
     return delete(Type=System, key_name=key_name, redirect_url=url)
 

@@ -16,11 +16,11 @@ from flask import url_for
 
 from helpers import slugify
 from config import app
+
 db = SQLAlchemy(app)
 
 class Error(Exception):
     pass
-
 
 URL_CHARS = 'abcdefghijkmpqrstuvwxyzABCDEFGHIJKLMNPQRST23456789'
 def get_random_uid():
