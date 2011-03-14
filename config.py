@@ -1,7 +1,9 @@
 # Avoids circular dependencies to app.
 import os
+import sys
 
 from flask import Flask
+sys.stdout = sys.stderr
 
 app = Flask('tinydocs')
 if os.environ.get('TINYDOCS_SETTINGS'):

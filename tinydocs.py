@@ -21,7 +21,7 @@ from config import app
 ###################
 @app.context_processor
 def inject_user():
-    if os.environ.get('REMOTE_USER'):
+    if request.environ.get('REMOTE_USER'):
         return dict(user=True)
     return dict(user=None)
 
