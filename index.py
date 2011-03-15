@@ -8,6 +8,7 @@ from whoosh.fields import TEXT
 from whoosh.fields import ID
 
 from whoosh.qparser import MultifieldParser
+from whoosh.analysis import StemmingAnalyzer
 
 from os import path
 from os import chown
@@ -20,12 +21,29 @@ INDEX_PATH = app.config.get('INDEX_PATH')
 import shutil
 import pwd
 
-index_schema = Schema(
-    name=TEXT(stored=True, field_boost=2.0),
-    category=TEXT(stored=True, field_boost=2.0),
-    body=TEXT(stored=True),
-    url=ID(stored=True, unique=True),
-    )
+class SearchSchema(Schema): 
+
+    def __init__(self): 
+        self._setup_fields() 
+
+    def _setup_fields(self): 
+        super(SearchSchema, self).__init__() 
+
+        schema_fields = { 
+            'name': TEXT(stored=True, field_boost=2.0),
+            'category':  TEXT(stored=True, field_boost=2.0), 
+            'body':  TEXT(stored=True, analyzer=StemmingAnalyzer()), 
+            'url': ID(stored=True, unique=True)
+        } 
+
+        for key, value in schema_fields.items(): 
+            self.add(key, value) 
+
+    def __getstate__(self): 
+        return True 
+
+    def __setstate__(self, *arg): 
+        self._setup_fields() 
 
 def strip_tags(value):
     return re.sub(r'<[^>]*?>', '', value)
@@ -55,14 +73,14 @@ class Index(object):
 
     def find(self, page=1, query=""):
         query = unicode(query)
-        query = MultifieldParser(['body', 'name', 'category'], schema=index_schema).parse(query)
+        query = MultifieldParser(['body', 'name', 'category'], schema=SearchSchema()).parse(query)
         searcher = self.ix.searcher()
         return searcher.search_page(query, page)
 
     def get_or_create_index(self):
         if not path.exists(INDEX_PATH):
             mkdir(INDEX_PATH)
-            return create_in(INDEX_PATH, index_schema)
+            return create_in(INDEX_PATH, SearchSchema())
         return open_dir(INDEX_PATH)
 
 # useful shortcuts
