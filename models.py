@@ -90,11 +90,11 @@ class Topic(TinyDocsModel, db.Model):
 
     @property
     def url(self):
-        return url_for('get_topic', system_key_name=self.system, category=slugify(self.category), name=slugify(self.name))
+        return self.get_key_name()
 
     @property
     def permalink(self):
-        return url_for('get_topic_by_uid', uid=self.uid)
+        return '/topics/%s' % self.uid
 
     @property
     def tooltip_permalink(self):
