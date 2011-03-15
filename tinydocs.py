@@ -26,11 +26,16 @@ from models import Error
 ###################
 @app.context_processor
 def inject_user():
-    if request.environ.get('REMOTE_USER'):
-        return dict(user=True)
-    if app.config.get('MODE') == 'development' and session.get('username'):
-        return dict(user=session['username'])
-    return dict(user=None)
+    if app.config.get('MODE') == 'development':
+        if session.get('username'):
+            return dict(user=session['username'], logout_url='/logout')
+        else:
+            return dict(login_url='/login')
+    else:
+        if request.environ.get('REMOTE_USER'):
+            return dict(user=True)
+        else:
+            return dict(user=None,login_url='/admin')
 
 ############
 # decorators

@@ -75,7 +75,7 @@ class Topic(TinyDocsModel, db.Model):
 
     __tablename__ = u'topic'
  
-    body = Column('body', Text)
+    body = Column('body', Text, nullable=False)
     system = Column('system', String(20), nullable=False)
     category = Column('category', String(256), nullable=False)
     published = Column('published', Boolean)
