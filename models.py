@@ -90,7 +90,7 @@ class Topic(TinyDocsModel, db.Model):
 
     @property
     def url(self):
-        return self.get_key_name()
+        return '/%s' % self.get_key_name()
 
     @property
     def permalink(self):
