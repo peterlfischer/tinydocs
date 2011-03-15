@@ -32,7 +32,7 @@
         <a href="{{url_for('edit_system', key_name=system.key_name)}}">[edit system]</a>
       </li>
       <li>
-        <form method="post" action="/admin/reindex">
+        <form method="post" action="url_for('reindex')">
           <input type="submit" value="[re-index]" />
         </form>
       </li>

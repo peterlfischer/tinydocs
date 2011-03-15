@@ -134,7 +134,8 @@ def logout():
 ##################
 # Admin Handlers
 ##################
-@app.route('/admin/reindex', methods=['POST'])
+@login_required
+@app.route('/actions/reindex', methods=['POST'])
 def reindex():
     import index
     index.remove()
