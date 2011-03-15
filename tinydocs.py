@@ -123,7 +123,7 @@ def login():
             <p><input type="text" name="username" />
             <p><input type="submit" value="Login" />
         </form>'''
-    abort(400)
+    abort(404)
 
 @app.route('/logout')
 def logout():
