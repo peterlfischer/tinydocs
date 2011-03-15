@@ -3,7 +3,6 @@ import os
 import shutil
 import unittest
 
-import config
 import index
 import tinydocs
 
@@ -22,16 +21,24 @@ class SystemsHandlerTest(unittest.TestCase):
         db.drop_all()
 
     def test_get_new_system_form(self):
-        r = self.c.get(path="/new")
+        r = self.c.get(path="/new",
+                       environ_overrides={'REMOTE_USER':'admin'}
+                       )
         self.assertEquals(r.status_code, 200)
 
-    def test_post_new_system(self):
-        r = self.c.post(path='/new', data={'name':'the-cool-system', 'description': 'this is a cool system'})
+    def test_post_new_system_when_logged_in(self):
+        r = self.c.post(path='/new', 
+                        environ_overrides={'REMOTE_USER':'admin'}, 
+                        data={'name':'the-cool-system', 'description': 'this is a cool system'})
         self.assertEquals(r.status_code, 302)
         s = System.query.get('the-cool-system')
         self.assertEquals(s.name, 'the-cool-system')
         self.assertEquals(s.key_name, 'the-cool-system')
         self.assertEquals(s.description, 'this is a cool system')
+
+    def test_post_new_system_when_not_logged_in(self):
+        r = self.c.post(path='/new', data={'name':'the-cool-system', 'description': 'this is a cool system'})
+        self.assertEquals(r.status_code, 400)
 
 class TopicHandlerTest(unittest.TestCase):
 
@@ -45,13 +52,15 @@ class TopicHandlerTest(unittest.TestCase):
         db.drop_all()
     
     def test_add(self):
-        r = self.c.post(path="/asystem/new", data={'body': u'the body','category': u'the category','name': u'the name'})
+        r = self.c.post(path="/asystem/new", 
+                        environ_overrides={'REMOTE_USER':'admin'}, 
+                        data={'body': u'the body','category': u'the category','name': u'the name'})
         self.assertEquals(r.status_code, 302)
         # # check index
 
     def test_edit_form(self):
         t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
-        r = self.c.get(path=t.url + '/edit')
+        r = self.c.get(path=t.url + '/edit', environ_overrides={'REMOTE_USER':'admin'})
         self.assertEquals(r.status_code, 200)
         self.assertTrue('abody' in r.data)
         self.assertTrue('foo' in r.data)
@@ -61,6 +70,7 @@ class TopicHandlerTest(unittest.TestCase):
     def test_edit(self):
         t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
         r = self.c.post(path=t.url + '/edit',
+                        environ_overrides={'REMOTE_USER':'admin'},
                         data={'body': u'new body','category': u'new category', 'name': u'new name'})
         self.assertEquals(r.status_code, 302)
         self.assertTrue('/new-category/new-name' in r.headers.get('location'))

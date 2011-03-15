@@ -1,4 +1,4 @@
-{%- macro render_sidebar(system) -%}
+{%- macro render_sidebar(system,user) -%}
   <h2>
     <a href="{{system.url}}">{% if system.icon_url %}
       <img src="{{system.icon_url}}" alt="{{system.category}}" />{% else %}{{system.name}}{% endif %}

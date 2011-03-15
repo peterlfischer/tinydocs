@@ -3,7 +3,7 @@
 {% block title %} | {{o.name}}{% endblock %}
 {% block body %}
 <aside class="sidebar grid_3">
-  {{ render_sidebar(o) }}
+  {{ render_sidebar(o,user) }}
 </aside>
 <article class="grid_9">
   {{o.description|safe}}

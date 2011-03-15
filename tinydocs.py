@@ -87,7 +87,6 @@ def delete(Type=None, key_name=None, redirect_url=None):
     else:
         return abort("Yo, you can't delete with that method")
 
-@login_required
 def edit(Type=None, key_name=None, form=None, **kwargs):
     """Edits object from the database and renders page.
 
