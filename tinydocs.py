@@ -10,6 +10,7 @@ from flask import flash
 from flask import abort
 from flask import Response
 from flask import Flask
+from flask import session
 
 import json
 import forms
@@ -27,6 +28,8 @@ from models import Error
 def inject_user():
     if request.environ.get('REMOTE_USER'):
         return dict(user=True)
+    if app.config.get('MODE') == 'development' and session.get('username'):
+        return dict(user=session['username'])
     return dict(user=None)
 
 ############
@@ -35,6 +38,8 @@ def inject_user():
 def login_required(fn):
     def decorated(*args, **kw):
         if request.environ.get('REMOTE_USER'):
+            return fn(*args, **kw)
+        if app.config.get('MODE') == 'development' and session['username']:
             return fn(*args, **kw)
         return Response('You need to login first!', status=400)
     return decorated
@@ -85,8 +90,9 @@ def delete(Type=None, key_name=None, redirect_url=None):
         flash("Sent %s down the drain!" % (o.name), 'message')
         return redirect(redirect_url)
     else:
-        return abort("Yo, you can't delete with that method")
+        abort(400)
 
+@login_required
 def edit(Type=None, key_name=None, form=None, **kwargs):
     """Edits object from the database and renders page.
 
@@ -102,6 +108,28 @@ def edit(Type=None, key_name=None, form=None, **kwargs):
         flash('Nice, you just saved %s' % (o.name), 'message')
         return redirect(o.url)
     return render_template("%s_form.html" % Type.__name__.lower(), form=form, **kwargs)
+
+#################
+# Dev. mode auth
+################
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if app.config.get('MODE') == 'development':
+        if request.method == 'POST':
+            session['username'] = request.form['username']
+            return redirect(url_for('get_systems'))
+        return '''
+        <form action="" method="post">
+            <p><input type="text" name="username" />
+            <p><input type="submit" value="Login" />
+        </form>'''
+    abort(400)
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if its there
+    session.pop('username', None)
+    return redirect(url_for('get_systems'))
 
 ##################
 # Admin Handlers
