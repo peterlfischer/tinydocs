@@ -1,6 +1,9 @@
 {% extends 'base.html'%}
 {% block body %}
 {% from "_formhelpers.html" import render_field %}
+<div class="sidebar grid_3">&nbsp;</div>
+<div class="grid_9">
+<h2>System</h2>
 <form method="post" action="" >
   <dl>
     {{ render_field(form.name) }}
@@ -9,4 +12,5 @@
   </dl>
   <p><input type="submit" value="Save System"></p>
 </form>
+</div>
 {% endblock %}

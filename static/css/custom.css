@@ -1,7 +1,26 @@
-header{
-    background-color: #59BEDD;
+html {
+	overflow-y:scroll;	
 }
 
+
+header{
+    background-color: #59BEDD;
+       height: 128px;
+}
+
+header h1 {
+	position:relative;
+	top:76px;
+}
+
+header div.grid_6 {
+	display:block;	
+	height:100%;
+}
+
+header .container_12 {
+		height:100%;
+}
 section{
     background-color: #FFF;
     padding-top: 20px;
@@ -9,8 +28,10 @@ section{
 }
 
 body{
-    background-color: #E0E0E0;
-    color: #777;
+    background-color: #f0f0f0;
+    color: #333;
+    font-family:helvetica, arial, sans-serif;
+    font-size:0.9em;
 }                               
 
 footer {
@@ -26,18 +47,53 @@ a:active,a:hover {
     color: #FF4040;
 }
 
+a{
+    border-bottom:1px dotted #777;
+}
+
+.sidebar h3,
+.sidebar  h2 a {
+
+    float:right;	
+}
+
+
+h1 a, h3 a, h2 a {
+	border-bottom: none;
+	color:#003647;
+}
+
+.sidebar h1 a {
+	float:right;	
+}	
+
 h2{
-    font-size: 40px;
+    font-size: 30px;
     margin-bottom: 10px;
 }
 h3{
-    font-size:25px;
+    font-size:24px;
     margin: 10px 0 10px 0;
 }
 ul{
-    list-style: square;
+    list-style: none;
     margin-left: 20px;
+    clear:both;
 }
+
+.sidebar li {
+	width:100%;	
+	display:inline-block;
+}
+
+.sidebar li a {
+	float:right;	
+}
+
+p {
+	margin:10px 0;	
+}
+
 footer a{
     font-weight: bold;
     line-height: 1.6em;
@@ -75,14 +131,47 @@ nav a:hover{
     margin-bottom:10px;
     padding:10px;
     border:1px solid #e5e5e5;
+    display:block;
 }
-a{
-    border-bottom:1px dotted #777;
-}
-h1 a, h3 a, h2 a {
-    border-bottom: none;
-}
+
 
 #wrapper{
     background-color: #FFF;
+}
+
+
+/*ERRORS*/
+ul.errors {
+	margin-left:0;	
+	display:inline-block;
+}
+ul.errors li {
+	color:red;	
+	background:yellow;
+	padding:5px;
+}
+
+/*TOOLTIP*/
+.tundra .dijitTooltipContainer {
+    font-family:helvetica, arial, sans-serif!important;
+}
+
+.dialogs body{
+	background-color:transparent!important;	
+}
+
+html.dialogs   {
+	overflow-y:auto;	
+}
+#dialog h3,
+#dialog h2 a,
+.dialogs h3, 
+.dialogs h2 a {
+    float: none;
+    clear:both;
+}
+
+/*Search*/
+#search_info {
+		
 }
