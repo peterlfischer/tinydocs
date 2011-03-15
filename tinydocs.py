@@ -44,7 +44,7 @@ def login_required(fn):
     def decorated(*args, **kw):
         if request.environ.get('REMOTE_USER'):
             return fn(*args, **kw)
-        if app.config.get('MODE') == 'development' and session['username']:
+        if app.config.get('MODE') == 'development' and session.get('username'):
             return fn(*args, **kw)
         return Response('You need to login first!', status=400)
     return decorated
