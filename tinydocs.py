@@ -200,7 +200,7 @@ def get_topic_by_uid_and_jsonp(uid):
 def get_topic_by_uid(uid):
     obj = Topic.query.filter_by(uid=uid).first_or_404()
     host = request.environ['HTTP_HOST']
-    return redirect(obj.url, host=host)
+    return redirect(obj.url)
 
 @app.route('/<system_key_name>/<category>/<name>', methods=['GET'])
 def get_topic(system_key_name, category, name):

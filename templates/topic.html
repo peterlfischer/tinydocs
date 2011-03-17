@@ -46,7 +46,7 @@
     <p>As dialog: <a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" class="irigo-dialog">help</a></p>
 
 <pre><code>
-&lt;a href="//{{host}}/{{o.permalink}}" rel="help" target="_blank" class="irigo-dialog"&gt;help&lt;&#47;a&gt;&lt;&#47;p&gt;
+&lt;a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" class="irigo-dialog"&gt;help&lt;&#47;a&gt;
 &lt;script src="//{{host}}&#47;plugin&#47;embed.js"&gt;&lt;&#47;script&gt;
 &lt;script&gt;
   dojo.ready(function(){
@@ -59,7 +59,7 @@
 
 <pre><code>
 
-&lt;button class="irigo-content" type="button"&gt;Load&lt;&#47;button&gt;&lt;&#47;p&gt;
+&lt;button class="irigo-content" type="button"&gt;Load&lt;&#47;button&gt;
 &lt;script src="//{{host}}&#47;plugin&#47;embed.js"&gt;&lt;&#47;script&gt;
 dojo.query('.irigo-content').onclick(function(){
   var node = this;
