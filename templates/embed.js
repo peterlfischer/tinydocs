@@ -1,10 +1,10 @@
 !window.dojo && document.write('<script src="//ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js"><\/script>');
 
-dojo.ready(function(){
+dojo.require('dijit.form.DropDownButton');
+dojo.require('dijit.TooltipDialog');
+dojo.require('dojo.io.script');
 
-  dojo.require('dijit.form.DropDownButton');
-  dojo.require('dijit.TooltipDialog');
-  dojo.require('dojo.io.script');
+dojo.ready(function(){
   
   function loadStylesheet(){
     var link = dojo.create("link", {
