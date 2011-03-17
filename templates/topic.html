@@ -31,28 +31,61 @@
     <form action="{{url_for('delete_topic', system_key_name=system.key_name, category=o.category, name=o.name)}}?_method=DELETE" method="POST" style="display:inline">
       <span type="submit" dojoType="dijit.form.Button">[delete]</span>
     </form>
+      
+    <p>As tooltip: <a href="{{o.permalink}}" rel="help" target="_blank" class="irigo-tooltip">help</a></p>
+    <pre><code>
+&lt;a href="{{o.permalink}}" rel="help" target="_blank" class="irigo-tooltip"&gt;help&lt;&#47;&gt;
+&lt;script src="//docs.irigo.com/plugin/embed.js"&gt;&lt;&#47;script&gt;
+&lt;script&gt;
+  dojo.ready(function(){
+    dojo.query('.irigo-tooltip').irigoTooltip();
+  });
+&lt;&#47;script&gt;
+    </code></pre>
 
-    <div id="dialog" dojoType="dijit.Dialog" title="Topic {{o.name}} via JSONP" style="width:350px">
-      <div id="content"></div>
-    </div>
-    <button dojoType="dijit.form.Button" type="button">
-      JSON(P)
-      <script type="dojo/method" event="onClick" args="evt">
-      dijit.byId("dialog").show();
-      target = dojo.byId('content');
-      var args = {
-        url: '/plugin/{{o.uid}}/jsonp',
-        callbackParamName: 'callback',
-        load: function(js){
-          target.innerHTML = '<h3>' + js.name + '</h3><p>' + js.body + '</p>';
-        }
-      }
-      dojo.io.script.get(args);
-      </script>
-    </button>
+    <p>As dialog: <a href="{{o.permalink}}" rel="help" target="_blank" class="irigo-dialog">help</a></p>
 
-    <span>As tooltip: <iframe src="{{o.tooltip_permalink}}" style="position:absolute" width="320" height="100%" ></iframe></span>
+<pre><code>
+&lt;a href="{{o.permalink}}" rel="help" target="_blank" class="irigo-dialog"&gt;help&lt;&#47;a&gt;&lt;&#47;p&gt;
+&lt;script src="&#47;plugin&#47;embed.js"&gt;&lt;&#47;script&gt;
+&lt;script&gt;
+  dojo.ready(function(){
+    dojo.query('.irigo-dialog').irigoDialog();
+  });
+&lt;&#47;script&gt;
+</code></pre>
+
+    <p>Load topic: <button class="irigo-content" type="button">Load</button></p>
+
+<pre><code>
+
+&lt;button class="irigo-content" type="button"&gt;Load&lt;&#47;button&gt;&lt;&#47;p&gt;
+&lt;script src="&#47;plugin&#47;embed.js"&gt;&lt;&#47;script&gt;
+dojo.query('.irigo-content').onclick(function(){
+  var node = this;
+  var dfd = IRIGO.getTopic('{{o.permalink}}');
+  dfd.then(function(js){
+    alert('Name: ' + js.name + "\n" + 'Name: ' + js.body)
+  });
+});
+&lt;&#47;script&gt;
+</code></pre>
   </section>
   {% endif %}
 </article>
+<script src="/plugin/embed.js"></script>
+<script>
+  dojo.ready(function(){
+    dojo.query('.irigo-tooltip').irigoTooltip();
+    dojo.query('.irigo-dialog').irigoDialog();
+
+    dojo.query('.irigo-content').onclick(function(){
+      var node = this;
+      var dfd = IRIGO.getTopic('{{o.permalink}}');
+      dfd.then(function(js){
+        alert('Name: ' + js.name + "\n" + 'Name: ' + js.body)
+      });
+    });
+  });
+</script>
 {% endblock %}

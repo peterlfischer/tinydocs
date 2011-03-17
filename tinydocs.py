@@ -175,20 +175,25 @@ def edit_system(key_name):
 #################
 # Topics Handlers
 #################
-# For cross-site use
-@app.route('/plugin/<uid>/jsonp', methods=['GET'])
-def get_topic_by_uid_and_jsonp(uid):
-    """Gets topic by JSONP"""  
-    obj = Topic.query.filter_by(uid=uid).first_or_404()
-    callback = request.args.get('callback')
-    data = json.dumps({'name': obj.name, 'body':obj.body})
-    return Response(response='%s(%s)' % (callback, data), mimetype='application/json')
+@app.route('/plugin/embed.js', methods=['GET'])
+def get_topic_plugin():
+    """Renders embed.js"""
+    return Response(render_template('embed.js', host=request.environ['HTTP_HOST']), mimetype='application/javascript')
 
 @app.route('/plugin/<uid>', methods=['GET'])
 def get_topic_plugin_by_uid(uid):
     """Renders a tooltip button for use in iframes."""
     obj = Topic.query.filter_by(uid=uid).first_or_404()
     return render_template("topic.plugin.html", o=obj)
+
+# For cross-site use
+@app.route('/topics/<uid>/jsonp', methods=['GET'])
+def get_topic_by_uid_and_jsonp(uid):
+    """Gets topic by JSONP"""  
+    obj = Topic.query.filter_by(uid=uid).first_or_404()
+    callback = request.args.get('callback')
+    data = json.dumps({'name': obj.name, 'body':obj.body})
+    return Response(response='%s(%s)' % (callback, data), mimetype='application/json')
 
 # For normal use
 @app.route('/topics/<uid>', methods=['GET'])
