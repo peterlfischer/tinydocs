@@ -52,7 +52,7 @@ def login_required(fn):
 ##########################
 ## generic helper-handlers
 ##########################
-def get(Type=None, key_name=None, obj=None):
+def get(Type=None, key_name=None, obj=None, **kwargs):
     """Gets object from database and renders html page.
 
     :param Type: the type of the model
@@ -60,7 +60,7 @@ def get(Type=None, key_name=None, obj=None):
     """
     if not obj:
         obj = Type.query.get_or_404(key_name)
-    return render_template("%s.html" % Type.__name__.lower(), o=obj)
+    return render_template("%s.html" % Type.__name__.lower(), o=obj, **kwargs)
 
 @login_required
 def add(Type=None, form=None, **kwargs):
@@ -199,21 +199,23 @@ def get_topic_by_uid_and_jsonp(uid):
 @app.route('/topics/<uid>', methods=['GET'])
 def get_topic_by_uid(uid):
     obj = Topic.query.filter_by(uid=uid).first_or_404()
-    return redirect(obj.url)
+    host = request.environ['HTTP_HOST']
+    return redirect(obj.url, host=host)
 
 @app.route('/<system_key_name>/<category>/<name>', methods=['GET'])
 def get_topic(system_key_name, category, name):
     key_name = '%s/%s/%s' % (system_key_name, category, name)
-    return get(Type=Topic, key_name=key_name)
+    host = request.environ['HTTP_HOST']
+    return get(Type=Topic, key_name=key_name, host=host)
 
-@app.route('/<system_key_name>/<category>/<name>/body', methods=['GET'])
-def get_topic_body(system_key_name, category, name):
-    key_name = '%s/%s/%s' % (system_key_name, category, name)
-    obj = get(Type=Topic, key_name=key_name)
-    return """<div>
-  <h2>%s</h2>
-  <div>%s</div>
-</div>""" % (obj.name, obj.body)
+# @app.route('/<system_key_name>/<category>/<name>/body', methods=['GET'])
+# def get_topic_body(system_key_name, category, name):
+#     key_name = '%s/%s/%s' % (system_key_name, category, name)
+#     obj = get(Type=Topic, key_name=key_name)
+#     return """<div>
+#   <h2>%s</h2>
+#   <div>%s</div>
+# </div>""" % (obj.name, obj.body)
 
 @app.route('/<system_key_name>/new', methods=['GET', 'POST'])
 def add_topic(system_key_name):
