@@ -10,7 +10,7 @@ dojo.ready(function(){
     var link = dojo.create("link", {
       type: "text/css",
       rel: "stylesheet",
-      href: "{{HOST}}/static/css/embed.css"
+      href: "{{host}}/static/css/embed.css"
     });
     dojo.doc.getElementsByTagName("head")[0].appendChild(link);
   }
