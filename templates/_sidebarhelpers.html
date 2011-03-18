@@ -1,5 +1,5 @@
 {%- macro render_sidebar(system,user) -%}
-  <h2>
+  <h2 class="clearfix">
     <a href="{{system.url}}">{%- if system.icon_url -%}
       <img src="{{system.icon_url}}" alt="{{system.category}}" title="{{system.name}}" />{% else %}{{system.name}}{%- endif -%}
     </a>
