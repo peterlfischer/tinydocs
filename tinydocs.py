@@ -178,7 +178,11 @@ def edit_system(key_name):
 @app.route('/plugin/embed.js', methods=['GET'])
 def get_topic_plugin():
     """Renders embed.js"""
-    return Response(render_template('embed.js', host=request.environ['HTTP_HOST']), mimetype='application/javascript')
+    headers = {
+        'Cache-Control': 'public, max-age=31104000', # a year
+        }
+    t = render_template('embed.js', host=request.environ['HTTP_HOST'])
+    return Response(t, mimetype='application/javascript', headers=headers)
 
 @app.route('/plugin/<uid>', methods=['GET'])
 def get_topic_plugin_by_uid(uid):
