@@ -94,7 +94,7 @@ class Topic(TinyDocsModel, db.Model):
 
     @property
     def permalink(self):
-        return '/%s' % self.uid
+        return '/topics/%s' % self.uid
 
     def put(self):
         import index
