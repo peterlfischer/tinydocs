@@ -35,7 +35,7 @@ def inject_user():
         if request.environ.get('REMOTE_USER'):
             return dict(user=True)
         else:
-            return dict(user=None,login_url='/admin')
+            return dict(user=None,login_url='/admin%s' % request.path)
 
 ############
 # decorators
