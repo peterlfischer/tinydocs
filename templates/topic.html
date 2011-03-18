@@ -23,7 +23,7 @@
     <a href="{{o.url}}/edit">[edit]</a>
 
     <form action="{{url_for('delete_topic', system_key_name=system.key_name, category=o.category, name=o.name)}}?_method=DELETE" method="POST" style="display:inline">
-      <span type="submit" dojoType="dijit.form.Button">[delete]</span>
+      <input type="submit">[delete]</span>
     </form>
       
     <p>As tooltip: <a href="{{o.permalink}}" rel="help" target="_blank" class="irigo-tooltip">help</a></p>
