@@ -3,19 +3,13 @@
 {% set system = o.system_as_obj %}
 {% block title %} | {{system.name}}: {{o.name}}{% endblock %}
 {% block body %}
-<style>
-  @import url("//ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/tundra/tundra.css");
-</style>
-<script src="//ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" djConfig="parseOnLoad:true"></script>
-<script>
-  dojo.require('dijit.Dialog');
-  dojo.require('dojo.io.script');
-  dojo.require('dijit.form.Button');
-</script>
+
 <aside class="sidebar grid_3">
   {{ render_sidebar(system, user) }}
 </aside>
+
 <article class="grid_9">
+
   <section class="topic">
     <div style="float:right">
       <a href="{{o.permalink}}">permalink</a>
@@ -33,7 +27,7 @@
     </form>
       
     <p>As tooltip: <a href="{{o.permalink}}" rel="help" target="_blank" class="irigo-tooltip">help</a></p>
-    <pre><code>
+    <pre>
 &lt;a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" class="irigo-tooltip"&gt;help&lt;&#47;a&gt;
 &lt;script src="//{{host}}/plugin/embed.js"&gt;&lt;&#47;script&gt;
 &lt;script&gt;
@@ -41,11 +35,11 @@
     dojo.query('.irigo-tooltip').irigoTooltip();
   });
 &lt;&#47;script&gt;
-    </code></pre>
+    </pre>
 
     <p>As dialog: <a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" class="irigo-dialog">help</a></p>
 
-<pre><code>
+<pre>
 &lt;a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" class="irigo-dialog"&gt;help&lt;&#47;a&gt;
 &lt;script src="//{{host}}&#47;plugin&#47;embed.js"&gt;&lt;&#47;script&gt;
 &lt;script&gt;
@@ -53,11 +47,11 @@
     dojo.query('.irigo-dialog').irigoDialog();
   });
 &lt;&#47;script&gt;
-</code></pre>
+</pre>
 
     <p>Load topic: <button class="irigo-content" type="button">Load</button></p>
 
-<pre><code>
+<pre>
 
 &lt;button class="irigo-content" type="button"&gt;Load&lt;&#47;button&gt;
 &lt;script src="//{{host}}&#47;plugin&#47;embed.js"&gt;&lt;&#47;script&gt;
@@ -69,10 +63,13 @@ dojo.query('.irigo-content').onclick(function(){
   });
 });
 &lt;&#47;script&gt;
-</code></pre>
+</pre>
   </section>
   {% endif %}
 </article>
+{% endblock %}
+
+{% block script %}
 <script src="//{{host}}/plugin/embed.js"></script>
 <script>
   dojo.ready(function(){

@@ -1,7 +1,8 @@
-!window.dojo && document.write('<script src="//ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js"><\/script>');
+// Requires the user to include dojo at the moment!!
 
-dojo.require('dijit.form.DropDownButton');
+dojo.require('dijit.Dialog');
 dojo.require('dijit.TooltipDialog');
+dojo.require('dijit.form.DropDownButton');
 dojo.require('dojo.io.script');
 
 dojo.ready(function(){
@@ -83,3 +84,4 @@ dojo.ready(function(){
   };
 
 });
+
