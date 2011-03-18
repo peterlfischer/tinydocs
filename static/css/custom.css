@@ -101,30 +101,30 @@ footer a{
     text-decoration: none;
 }
 
-nav{
-    background-color: #59BEDD;
-    letter-spacing: 1px;
-}
-nav a{
-    display:block;
-    color:white;
-    font-weight: bold;
-    text-transform: uppercase; 
-    text-decoration: none;
-    padding: 7px;
-}
-nav ul{
-    list-style: none;
-}
-nav li{
-    width: 150px;
-    text-align:center;
-    float: left;
-    background: none;
-}
-nav a:hover{
-    color: #7F7F7F;
-}
+/* nav{ */
+/*     background-color: #59BEDD; */
+/*     letter-spacing: 1px; */
+/* } */
+/* nav a{ */
+/*     display:block; */
+/*     color:white; */
+/*     font-weight: bold; */
+/*     text-transform: uppercase;  */
+/*     text-decoration: none; */
+/*     padding: 7px; */
+/* } */
+/* nav ul{ */
+/*     list-style: none; */
+/* } */
+/* nav li{ */
+/*     width: 150px; */
+/*     text-align:center; */
+/*     float: left; */
+/*     background: none; */
+/* } */
+/* nav a:hover{ */
+/*     color: #7F7F7F; */
+/* } */
 
 .admin{
     margin-top: 10px;
