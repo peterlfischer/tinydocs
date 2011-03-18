@@ -60,7 +60,7 @@ class TopicHandlerTest(unittest.TestCase):
 
     def test_edit_form(self):
         t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
-        r = self.c.get(path=t.url + '/edit', environ_overrides={'REMOTE_USER':'admin'})
+        r = self.c.get(path='/asystem/cat/foo/edit', environ_overrides={'REMOTE_USER':'admin'})
         self.assertEquals(r.status_code, 200)
         self.assertTrue('abody' in r.data)
         self.assertTrue('foo' in r.data)
@@ -69,7 +69,7 @@ class TopicHandlerTest(unittest.TestCase):
 
     def test_edit(self):
         t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
-        r = self.c.post(path=t.url + '/edit',
+        r = self.c.post(path='/asystem/cat/foo/edit',
                         environ_overrides={'REMOTE_USER':'admin'},
                         data={'body': u'new body','category': u'new category', 'name': u'new name'})
         self.assertEquals(r.status_code, 302)
@@ -77,7 +77,7 @@ class TopicHandlerTest(unittest.TestCase):
 
     def test_get_topic_by_uid_and_jsonp(self):
         t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
-        r = self.c.get(path='/plugin/' + t.uid + '/jsonp?callback=foo')
+        r = self.c.get(path='/topics/' + t.uid + '/jsonp?callback=foo')
         self.assertEquals(r.status_code, 200)
         self.assertEquals(r.data, 'foo({"body": "abody", "name": "foo"})')
 

@@ -90,20 +90,19 @@ class Topic(TinyDocsModel, db.Model):
 
     @property
     def url(self):
-        return '/%s' % self.get_key_name()
+        return url_for('get_topic', system_key_name=self.system, category=slugify(self.category),name=slugify(self.name))
 
     @property
     def permalink(self):
-        return '/topics/%s' % self.uid
+        return url_for('get_topic_by_uid', uid=self.uid)
 
-    @property
-    def tooltip_permalink(self):
-        return '/plugin/%s' % (self.uid)
-    
     def put(self):
         import index
         super(Topic, self).put()
-        index.add(body=self.body, category=self.category, name=self.name, url=self.permalink)
+        # we are not using url_for here
+        # since we don't want /admin in urls
+        url = '/%s' % self.get_key_name()
+        index.add(body=self.body, category=self.category, name=self.name, url=url)
         return self
 
 class System(TinyDocsModel, db.Model):
