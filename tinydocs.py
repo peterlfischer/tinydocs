@@ -37,6 +37,10 @@ def inject_user():
         else:
             return dict(user=None,login_url='/admin%s' % request.path)
 
+@app.context_processor
+def inject_media_version():
+    return dict(version=app.config.get('MEDIA_VERSION'))
+
 ############
 # decorators
 ############
