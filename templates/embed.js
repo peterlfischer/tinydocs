@@ -37,8 +37,6 @@ dojo.ready(function(){
       baseClass:"irigo-tooltip-base",
       iconClass:"irigo-tooltip-base-icon",
       onClick: function(e){
-        e.preventDefault();
-        e.stopPropagation();
         if(dialog.get('content') == ''){
           var dfd = getTopic(topic_url);
           dfd.then(function(js){
@@ -46,6 +44,7 @@ dojo.ready(function(){
           });
         }
         // else, we've already loaded the content.
+        dojo.stopEvent(e);
       }
     }); 
     // replacing the a tag!
