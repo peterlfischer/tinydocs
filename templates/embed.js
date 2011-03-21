@@ -37,9 +37,11 @@ dojo.ready(function(){
       baseClass:"irigo-tooltip-base",
       iconClass:"irigo-tooltip-base-icon",
       onClick: function(e){
+        e.preventDefault();
+        e.stopPropagation();
         var dfd = getTopic(topic_url);
         dfd.then(function(js){
-          dialog.set('content', '<h3>' + js.name + '</h3><p>' + js.excerpt + '</p>');
+          dialog.set('content', '<p>' + js.excerpt + ' (<a href="' + topic_url + '" target="_blank">more</a>)</p>');
         });
       }
     }); 
@@ -62,7 +64,8 @@ dojo.ready(function(){
       onClick: function(e){
         var dfd = getTopic(topic_url);
         dfd.then(function(js){
-          dialog.set('content', '<h3>' + js.name + '</h3><p>' + js.excerpt + '</p>');
+          dialog.set('title', js.name);
+          dialog.set('content', '<p>' + js.excerpt + '</p><p style="float:right"><a href="' + topic_url + '">more</a></p>');
         });
         dialog.show();
       }
