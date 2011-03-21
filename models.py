@@ -79,7 +79,7 @@ class Topic(TinyDocsModel, db.Model):
     system = Column('system', String(20), nullable=False)
     category = Column('category', String(256), nullable=False)
     published = Column('published', Boolean)
-    excerpt = Column('excerpt', String(500))
+    excerpt = Column('excerpt', Text)
     login_required = Column('login_required', Boolean)
 
     @property
