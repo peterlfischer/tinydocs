@@ -57,8 +57,8 @@ dojo.ready(function(){
     });
 
     var button = new dijit.form.DropDownButton({
-      baseClass:"irigo-tooltip",
-      iconClass:"irigo-tooltip-icon",
+      baseClass:"irigo-tooltip-base",
+      iconClass:"irigo-tooltip-base-icon",
       onClick: function(e){
         var dfd = getTopic(topic_url);
         dfd.then(function(js){
