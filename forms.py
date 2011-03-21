@@ -10,6 +10,7 @@ from helpers import slugify
 class TopicForm(Form):
     
     body = TextAreaField('Body', [Required()])
+    excerpt = TextAreaField('Excerpt', [Required()])
     category = TextField('Category', [Required()])
     name = TextField('Name', [Required()])
     published = BooleanField('Published')

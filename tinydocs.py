@@ -207,7 +207,7 @@ def get_topic_by_uid_and_jsonp(uid):
     """Gets topic by JSONP"""  
     obj = Topic.query.filter_by(uid=uid).first_or_404()
     callback = request.args.get('callback')
-    data = json.dumps({'name': obj.name, 'body':obj.body})
+    data = json.dumps({'name': obj.name, 'excerpt':obj.excerpt})
     return Response(response='%s(%s)' % (callback, data), mimetype='application/json')
 
 # For normal use

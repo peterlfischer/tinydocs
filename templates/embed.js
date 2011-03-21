@@ -39,7 +39,7 @@ dojo.ready(function(){
       onClick: function(e){
         var dfd = getTopic(topic_url);
         dfd.then(function(js){
-          dialog.set('content', '<h3>' + js.name + '</h3><p>' + js.body + '</p>');
+          dialog.set('content', '<h3>' + js.name + '</h3><p>' + js.excerpt + '</p>');
         });
       }
     }); 
@@ -62,7 +62,7 @@ dojo.ready(function(){
       onClick: function(e){
         var dfd = getTopic(topic_url);
         dfd.then(function(js){
-          dialog.set('content', '<h3>' + js.name + '</h3><p>' + js.body + '</p>');
+          dialog.set('content', '<h3>' + js.name + '</h3><p>' + js.excerpt + '</p>');
         });
         dialog.show();
       }
@@ -79,7 +79,7 @@ dojo.ready(function(){
     var dfd = getTopic(topic_url);
     dfd.then(function(js){
       var wrapper = dojo.create('div', { 
-        innerHTML: '<h3>' + js.name + '</h3><p>' + js.body + '</p>'
+        innerHTML: '<h3>' + js.name + '</h3><p>' + js.excerpt + '</p>'
       });
       // replacing the a tag!
       dojo.place(wrapper, node, 'replace');

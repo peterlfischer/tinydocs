@@ -11,9 +11,16 @@
       {{ render_field(form.category) }}
       {{ render_field(form.system) }}
       {{ render_field(form.name) }}
+      {{ render_field(form.excerpt) }}
       {#{ render_field(form.published) }#}
       {#{ render_field(form.login_required) }#}
       {{ render_field(form.body, cols=80, rows=20) }}
+      <dt>
+        {{form.excerpt.label}}
+      </dt>
+      <dd>
+        <div id="excerpt-field" style="height:100px"></div>
+      </dd>
       <dt>
         {{form.body.label}}
       </dt>
@@ -35,12 +42,15 @@
 
     dojo.ready(function () {
 
-      dojo.query('#body-wrapper').style({display:'none'});
-      var editor = new dijit.Editor({extraPlugins:['createLink', 'insertImage', 'viewsource']}, dojo.byId('body-field'));
-      editor.set('value', dojo.byId('body').value);
+      dojo.query('#body-wrapper, #excerpt-wrapper').style({display:'none'});
+      var body_editor = new dijit.Editor({extraPlugins:['createLink', 'insertImage', 'viewsource']}, dojo.byId('body-field'));
+      var excerpt_editor = new dijit.Editor({extraPlugins:['createLink', 'insertImage', 'viewsource']}, dojo.byId('excerpt-field'));
+      body_editor.set('value', dojo.byId('body').value);
+      excerpt_editor.set('value', dojo.byId('excerpt').value);
 
       dojo.query('form').onsubmit(function () {
-         dojo.byId('body').value = editor.get('value');
+         dojo.byId('body').value = body_editor.get('value');
+         dojo.byId('excerpt').value = excerpt_editor.get('value');
       });
    });
   </script>
