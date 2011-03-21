@@ -117,7 +117,7 @@ class System(TinyDocsModel, db.Model):
 
     @property
     def topics(self):
-        return Topic.query.filter_by(system=self.key_name).order_by(Topic.category)
+        return Topic.query.filter_by(system=self.key_name).order_by(Topic.category).order_by(Topic.name)
 
     @property
     def url(self):
