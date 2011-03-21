@@ -3,7 +3,7 @@
 {% from "_formhelpers.html" import render_field %}
 {% block body %}
 <div class="sidebar grid_3">
-  {{ render_sidebar(system) }}
+  {{ render_sidebar(system,user) }}
 </div>
 <div class="grid_9">
   <form method="post" action="" >
@@ -19,13 +19,13 @@
         {{form.excerpt.label}}
       </dt>
       <dd>
-        <div id="excerpt-field"></div>
+        <div id="excerpt-field" style="min-height:100px"></div>
       </dd>
       <dt>
         {{form.body.label}}
       </dt>
       <dd>
-        <div id="body-field"></div>
+        <div id="body-field" style="min-height:200px"></div>
       </dd>
     </dl>
     
