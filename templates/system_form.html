@@ -3,14 +3,41 @@
 {% from "_formhelpers.html" import render_field %}
 <div class="sidebar grid_3">&nbsp;</div>
 <div class="grid_9">
-<h2>System</h2>
-<form method="post" action="" >
-  <dl>
-    {{ render_field(form.name) }}
-    {{ render_field(form.description, cols=80, rows=20) }}
-    {{ render_field(form.icon_url) }}
-  </dl>
-  <p><input type="submit" value="Save System"></p>
-</form>
+  <h2>System</h2>
+  <form method="post" action="" >
+    <dl>
+      {{ render_field(form.name) }}
+      {{ render_field(form.description, cols=80, rows=20) }}
+      {{ render_field(form.icon_url) }}
+      <dt>
+        {{form.description.label}}
+      </dt>
+      <dd>
+        <div id="description-field"></div>
+      </dd>
+    </dl>
+    
+    <p><input type="submit" value="Save System"></p>
+  </form>
 </div>
+  
 {% endblock %}
+
+{% block script %}
+  <script>
+    dojo.require("dijit.Editor");
+    dojo.require("dijit._editor.plugins.LinkDialog");
+    dojo.require("dijit._editor.plugins.ViewSource");
+
+    dojo.ready(function () {
+
+      dojo.query('#description-wrapper').style({display:'none'});
+      var editor = new dijit.Editor({extraPlugins:['createLink', 'insertImage', 'viewsource']}, dojo.byId('description-field'));
+      editor.set('value', dojo.byId('description').value);
+
+      dojo.query('form').onsubmit(function () {
+         dojo.byId('description').value = editor.get('value');
+      });
+   });
+  </script>
+{% endblock %}  

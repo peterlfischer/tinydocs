@@ -9,13 +9,39 @@
   <form method="post" action="" >
     <dl>
       {{ render_field(form.category) }}
+      {{ render_field(form.system) }}
       {{ render_field(form.name) }}
       {#{ render_field(form.published) }#}
       {#{ render_field(form.login_required) }#}
       {{ render_field(form.body, cols=80, rows=20) }}
-      {{ render_field(form.system) }}
+      <dt>
+        {{form.body.label}}
+      </dt>
+      <dd>
+        <div id="body-field"></div>
+      </dd>
     </dl>
+    
     <p><input type="submit" value="Save Topic"></p>
   </form>
 </div>
 {% endblock %}
+
+{% block script %}
+  <script>
+    dojo.require("dijit.Editor");
+    dojo.require("dijit._editor.plugins.LinkDialog");
+    dojo.require("dijit._editor.plugins.ViewSource");
+
+    dojo.ready(function () {
+
+      dojo.query('#body-wrapper').style({display:'none'});
+      var editor = new dijit.Editor({extraPlugins:['createLink', 'insertImage', 'viewsource']}, dojo.byId('body-field'));
+      editor.set('value', dojo.byId('body').value);
+
+      dojo.query('form').onsubmit(function () {
+         dojo.byId('body').value = editor.get('value');
+      });
+   });
+  </script>
+{% endblock %}  
