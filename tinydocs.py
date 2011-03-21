@@ -118,6 +118,13 @@ def edit(Type=None, key_name=None, form=None, **kwargs):
         return redirect(o.url)
     return render_template("%s_form.html" % Type.__name__.lower(), form=form, **kwargs)
 
+####################
+# Standard 404 page
+###################
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 #################
 # Dev. mode auth
 ################
