@@ -75,7 +75,7 @@ h3{
     font-size:24px;
     margin: 10px 0 10px 0;
 }
-ul{
+.sidebar ul{
     list-style: none;
     margin-left: 20px;
     clear:both;
