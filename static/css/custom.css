@@ -75,15 +75,21 @@ h3{
     font-size:24px;
     margin: 10px 0 10px 0;
 }
+
+ul{
+    list-style-position: inside;
+}
+
 .sidebar ul{
     list-style: none;
-    margin-left: 20px;
+    margin-left: 0 0 0 20px;
     clear:both;
 }
 
 .sidebar li {
 	width:100%;	
 	display:inline-block;
+  margin:0;
 }
 
 .sidebar li a {
