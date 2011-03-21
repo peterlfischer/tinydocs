@@ -26,7 +26,6 @@ dojo.ready(function(){
   
   function tooltip(node, args){
     node = dojo.byId(node);
-  
     var topic_url = node.href;
   
     var dialog = new dijit.TooltipDialog({
@@ -35,8 +34,8 @@ dojo.ready(function(){
     
     var button = new dijit.form.DropDownButton({
       dropDown: dialog,
-      baseClass:"irigo-tooltip",
-      iconClass:"irigo-tooltip-icon",
+      baseClass:"irigo-tooltip-base",
+      iconClass:"irigo-tooltip-base-icon",
       onClick: function(e){
         var dfd = getTopic(topic_url);
         dfd.then(function(js){
