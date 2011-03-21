@@ -19,7 +19,7 @@
         {{form.excerpt.label}}
       </dt>
       <dd>
-        <div id="excerpt-field" style="height:100px"></div>
+        <div id="excerpt-field"></div>
       </dd>
       <dt>
         {{form.body.label}}
@@ -39,12 +39,13 @@
     dojo.require("dijit.Editor");
     dojo.require("dijit._editor.plugins.LinkDialog");
     dojo.require("dijit._editor.plugins.ViewSource");
+    dojo.require("dijit._editor.plugins.AlwaysShowToolbar")
 
     dojo.ready(function () {
 
       dojo.query('#body-wrapper, #excerpt-wrapper').style({display:'none'});
-      var body_editor = new dijit.Editor({extraPlugins:['createLink', 'insertImage', 'viewsource']}, dojo.byId('body-field'));
-      var excerpt_editor = new dijit.Editor({extraPlugins:['createLink', 'insertImage', 'viewsource']}, dojo.byId('excerpt-field'));
+      var body_editor = new dijit.Editor({height:'', extraPlugins:['createLink', 'insertImage', 'viewsource', 'dijit._editor.plugins.AlwaysShowToolbar']}, dojo.byId('body-field'));
+      var excerpt_editor = new dijit.Editor({height:'', extraPlugins:['createLink', 'insertImage', 'viewsource', 'dijit._editor.plugins.AlwaysShowToolbar']}, dojo.byId('excerpt-field'));
       body_editor.set('value', dojo.byId('body').value);
       excerpt_editor.set('value', dojo.byId('excerpt').value);
 
