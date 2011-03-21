@@ -70,12 +70,28 @@ dojo.ready(function(){
     // replacing the a tag!
     dojo.place(button.domNode, node, 'replace');
   }
+
+  function text(node, args){
+    node = dojo.byId(node);
+
+    var topic_url = node.href;
+
+    var dfd = getTopic(topic_url);
+    dfd.then(function(js){
+      var wrapper = dojo.create('div', { 
+        innerHTML: '<h3>' + js.name + '</h3><p>' + js.body + '</p>'
+      });
+      // replacing the a tag!
+      dojo.place(wrapper, node, 'replace');
+    });
+  }
   
   loadStylesheet();
   
   dojo.extend(dojo.NodeList, {
     irigoTooltip: dojo.NodeList._adaptAsForEach(tooltip),
-    irigoDialog: dojo.NodeList._adaptAsForEach(dialog)
+    irigoDialog: dojo.NodeList._adaptAsForEach(dialog),
+    irigoText: dojo.NodeList._adaptAsForEach(text)
   });
 
   IRIGO = {

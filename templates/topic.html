@@ -2,6 +2,9 @@
 {% from "_sidebarhelpers.html" import render_sidebar %}
 {% set system = o.system_as_obj %}
 {% block title %} | {{system.name}}: {{o.name}}{% endblock %}
+{% block head %}
+<link href="https://ajax.googleapis.com/ajax/libs/dojo/1.5/dojox/highlight/resources/highlight.css" rel="stylesheet" />	
+{% endblock %}
 {% block body %}
 
 <aside class="sidebar grid_3">
@@ -25,12 +28,19 @@
     <form action="{{url_for('delete_topic', system_key_name=system.key_name, category=o.category, name=o.name)}}?_method=DELETE" method="POST" style="display:inline">
       <input type="submit" value="[delete]"></input>
     </form>
+
+    <h3>API Examples</h3>
+    <p>The following piece of JavaScript enables the plugin:</p>
+    <pre>
+&lt;script src="//{{host}}&#47;plugin&#47;embed.js"&gt;&lt;&#47;script&gt;     
+    </pre>
       
-    <p>As tooltip: <a href="{{o.permalink}}" rel="help" target="_blank" class="irigo-tooltip">help</a></p>
+    <p>Tooltip: <a href="{{o.permalink}}" rel="help" target="_blank" class="irigo-tooltip">help</a></p>
+
     <pre>
 &lt;a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" 
-  class="irigo-tooltip"&gt;help&lt;&#47;a&gt;
-&lt;script src="//{{host}}/plugin/embed.js"&gt;&lt;&#47;script&gt;
+   class="irigo-tooltip"&gt;help&lt;&#47;a&gt;
+
 &lt;script&gt;
   dojo.ready(function(){
     dojo.query('.irigo-tooltip').irigoTooltip();
@@ -38,35 +48,40 @@
 &lt;&#47;script&gt;
     </pre>
 
-    <p>As dialog: <a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" class="irigo-dialog">help</a></p>
+    <p>Dialog: <a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" class="irigo-dialog">help</a></p>
 
 <pre>
 &lt;a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" 
-  class="irigo-dialog"&gt;help&lt;&#47;a&gt;
-&lt;script src="//{{host}}&#47;plugin&#47;embed.js"&gt;&lt;&#47;script&gt;
+   class="irigo-dialog"&gt;help&lt;&#47;a&gt;
+
 &lt;script&gt;
   dojo.ready(function(){
     dojo.query('.irigo-dialog').irigoDialog();
   });
 &lt;&#47;script&gt;
 </pre>
-
-    <p>Load topic: <button class="irigo-content" type="button">Load</button></p>
+    
+  <p>Text: 
+    <button type="button" id="show-text-button">
+      Show 
+    </button>
+  </p>
 
 <pre>
+&lt;a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" 
+   class="irigo-text">help&lt;&#47;a&gt;
 
-&lt;button class="irigo-content" type="button"&gt;Load&lt;&#47;button&gt;
-&lt;script src="//{{host}}&#47;plugin&#47;embed.js"&gt;&lt;&#47;script&gt;
-dojo.query('.irigo-content').onclick(function(){
-  var node = this;
-  var dfd = IRIGO.getTopic('{{o.permalink}}');
-  dfd.then(function(js){
-    alert('Name: ' + js.name + "\n" + 'Name: ' + js.body)
-  });
-});
+&lt;script&gt;
+  dojo.query('.irigo-text').irigoText();
 &lt;&#47;script&gt;
 </pre>
+
+  <div id="irigo-docs-loaded-with-text" style="opacity:0">
+    <a href="//{{host}}{{o.permalink}}" rel="help" target="_blank" class="irigo-text">help</a>
+  </div>
+  
   </section>
+
   {% endif %}
 </article>
 {% endblock %}
@@ -74,9 +89,15 @@ dojo.query('.irigo-content').onclick(function(){
 {% block script %}
 <script src="//{{host}}/plugin/embed.js"></script>
 <script>
+  dojo.require("dojox.highlight");
+  dojo.require("dojox.highlight.languages._www");
+  
   dojo.ready(function(){
     dojo.query('.irigo-tooltip').irigoTooltip();
     dojo.query('.irigo-dialog').irigoDialog();
+    dojo.query('.irigo-text').irigoText();
+
+    dojo.query("pre").forEach(dojox.highlight.init);
 
     dojo.query('.irigo-content').onclick(function(){
       var node = this;
@@ -85,6 +106,13 @@ dojo.query('.irigo-content').onclick(function(){
         alert('Name: ' + js.name + "\n" + 'Name: ' + js.body)
       });
     });
+
+  new dijit.form.Button({
+    onClick: function(e){
+      dojo.fadeIn({node:"irigo-docs-loaded-with-text"}).play();
+    }
+  }, "show-text-button");
+
   });
 </script>
 {% endblock %}
