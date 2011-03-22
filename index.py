@@ -17,7 +17,7 @@ from os import mkdir
 
 
 from config import app
-INDEX_PATH = app.config.get('INDEX_PATH')
+INDEX_PATH = app.config.get('INDEX_FOLDER')
 import shutil
 import pwd
 

@@ -11,6 +11,9 @@ from flask import abort
 from flask import Response
 from flask import Flask
 from flask import session
+from flask import send_from_directory
+
+from werkzeug import secure_filename
 
 import json
 import forms
@@ -157,8 +160,8 @@ def logout():
 ##################
 # Admin Handlers
 ##################
-@login_required
 @app.route('/actions/reindex', methods=['POST'])
+@login_required
 def reindex():
     import index
     index.remove()
@@ -230,15 +233,6 @@ def get_topic(system_key_name, category, name):
     host = request.environ['HTTP_HOST']
     return get(Type=Topic, key_name=key_name, host=host)
 
-# @app.route('/<system_key_name>/<category>/<name>/body', methods=['GET'])
-# def get_topic_body(system_key_name, category, name):
-#     key_name = '%s/%s/%s' % (system_key_name, category, name)
-#     obj = get(Type=Topic, key_name=key_name)
-#     return """<div>
-#   <h2>%s</h2>
-#   <div>%s</div>
-# </div>""" % (obj.name, obj.body)
-
 @app.route('/<system_key_name>/new', methods=['GET', 'POST'])
 def add_topic(system_key_name):
     form = request.form.copy()
@@ -268,6 +262,62 @@ def search():
     page = int(page) if page else 1
     results = index.find(query=query, page=page)
     return render_template('search.html', results=results, page=page, query=query)
+
+#################
+# Upload of files
+#################
+def clean_filename(filename):
+    i = filename.rindex(".")
+    if i != -1:
+        filename = filename[0:i] + filename[i:].lower()
+    return secure_filename(filename)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+@app.route('/uploads/')
+def get_uploads():
+    """List the contents of the upload folder.
+
+    Note: This is only for dev. use, replace with
+    static file serving in production.
+    """
+    from os import listdir
+    filenames = listdir(app.config['UPLOAD_FOLDER'])
+    links = ['<li><a href="/uploads/%s">%s</a></li>' % (f,f) for f in filenames]
+    return Response("""<html>
+<head></head>
+<body>
+  <h2>Uploaded Files</h2>
+  <p><em>Note replace with static file serving in production.</em></p>
+  <ul>%s</ul>
+</body>
+</html>""" % ''.join(links))
+
+@app.route('/uploads/<filename>')
+def get_upload(filename):
+    """Get an uploaded file from the upload folder
+    
+    :param filename: name of the file.
+    """
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/upload/', methods=['GET', 'POST'])
+@login_required
+def upload_file():
+    """Takes care of the form for and the uploading of files""" 
+    if request.method == 'POST':
+        file = request.files['file']
+        if file:
+            if allowed_file(file.filename):
+                filename = clean_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                return redirect(url_for('get_upload', filename=filename))
+            else:
+                flash('Hey, %s is a wacked filename' % (file.filename))
+        else:
+            flash('Hey, you should send a file')                
+    return render_template('upload.html')
 
 if __name__ == '__main__':
     import os

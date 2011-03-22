@@ -54,7 +54,7 @@ class TopicHandlerTest(unittest.TestCase):
     def test_add(self):
         r = self.c.post(path="/asystem/new", 
                         environ_overrides={'REMOTE_USER':'admin'}, 
-                        data={'body': u'the body','category': u'the category','name': u'the name'})
+                        data={'body': u'the body','category': u'the category', 'excerpt':u'foo', 'name': u'the name'})
         self.assertEquals(r.status_code, 302)
         # # check index
 
@@ -71,22 +71,22 @@ class TopicHandlerTest(unittest.TestCase):
         t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
         r = self.c.post(path='/asystem/cat/foo/edit',
                         environ_overrides={'REMOTE_USER':'admin'},
-                        data={'body': u'new body','category': u'new category', 'name': u'new name'})
+                        data={'body': u'new body','category': u'new category', 'name': u'new name','excerpt':'foo'})
         self.assertEquals(r.status_code, 302)
         self.assertTrue('/new-category/new-name' in r.headers.get('location'))
 
     def test_get_topic_by_uid_and_jsonp(self):
-        t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
+        t = Topic(name="foobar", category="cat", system="asystem", body="", excerpt="abody").put()
         r = self.c.get(path='/topics/' + t.uid + '/jsonp?callback=foo')
         self.assertEquals(r.status_code, 200)
-        self.assertEquals(r.data, 'foo({"body": "abody", "name": "foo"})')
+        self.assertEquals(r.data, 'foo({"excerpt": "abody", "name": "foobar"})')
 
 class SearchIndexTest(unittest.TestCase):
 
     def setUp(self):
         # remove the index by deleting it
-        if os.path.exists(tinydocs.app.config['INDEX_PATH']):
-            shutil.rmtree(tinydocs.app.config['INDEX_PATH'])
+        if os.path.exists(tinydocs.app.config['INDEX_FOLDER']):
+            shutil.rmtree(tinydocs.app.config['INDEX_FOLDER'])
 
     def tearDown(self):
         pass
@@ -110,7 +110,16 @@ class SearchIndexTest(unittest.TestCase):
         index.add(**helptext)
         result = index.find(query='body')
         self.assertEquals(result.total, 1)
-        
+
+class UploadHandlerTest(unittest.TestCase):
+
+    def setUp(self):
+        self.c = tinydocs.app.test_client()
+
+    def test_get_upload_page(self):
+        r = self.c.get(path='/upload/', environ_overrides={'REMOTE_USER':'admin'})
+        self.assertEquals(r.status_code, 200)
+
 if __name__ == '__main__':
     unittest.main()
 
