@@ -24,6 +24,8 @@ from models import System
 from models import Topic
 from models import Error
 
+from functools import wraps
+
 ###################
 # Context processor
 ###################
