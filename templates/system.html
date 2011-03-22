@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% from "_sidebarhelpers.html" import render_sidebar %}
-{% block title %} | {{o.name}}{% endblock %}
+{% block title %}{{o.name}}{% endblock %}
 {% block body %}
 <aside class="sidebar grid_3">
   {{ render_sidebar(o,user) }}

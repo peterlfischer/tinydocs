@@ -54,14 +54,15 @@ def date(value, format='%d-%m-%Y'):
 ############
 # decorators
 ############
-def login_required(fn):
-    def decorated(*args, **kw):
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
         if request.environ.get('REMOTE_USER'):
-            return fn(*args, **kw)
+            return fn(*args, **kwargs)
         if app.config.get('MODE') == 'development' and session.get('username'):
-            return fn(*args, **kw)
+            return fn(*args, **kwargs)
         return Response('You need to login first!', status=400)
-    return decorated
+    return decorated_function
 
 ##########################
 ## generic helper-handlers
