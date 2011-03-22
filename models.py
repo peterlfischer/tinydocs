@@ -32,7 +32,7 @@ class TinyDocsModel():
     uid = Column('uid', String(10))
     name = Column('name', String(256), nullable=False)
     created = Column('created', DateTime, default=func.current_timestamp())
-    updated = Column('updated', DateTime, onupdate=func.current_timestamp())
+    updated = Column('updated', DateTime, default=func.current_timestamp(), onupdate=func.current_timestamp())
     created_by = Column('created_by', String(70))
     updated_by = Column('updated_by', String(70))
 

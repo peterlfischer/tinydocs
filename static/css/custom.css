@@ -106,6 +106,9 @@ footer a{
     text-transform: lowercase;
     text-decoration: none;
 }
+time{
+    color:#777;
+}
 
 /* nav{ */
 /*     background-color: #59BEDD; */

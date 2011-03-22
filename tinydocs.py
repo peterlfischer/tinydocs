@@ -41,6 +41,13 @@ def inject_user():
 def inject_media_version():
     return dict(version=app.config.get('MEDIA_VERSION'))
 
+################
+# custom filters
+################
+@app.template_filter()
+def date(value, format='%d-%m-%Y'):
+    return value.strftime(format)
+
 ############
 # decorators
 ############
