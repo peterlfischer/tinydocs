@@ -60,9 +60,9 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if request.environ.get('REMOTE_USER'):
-            return fn(*args, **kwargs)
+            return f(*args, **kwargs)
         if app.config.get('MODE') == 'development' and session.get('username'):
-            return fn(*args, **kwargs)
+            return f(*args, **kwargs)
         return Response('You need to login first!', status=400)
     return decorated_function
 
