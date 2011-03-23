@@ -314,6 +314,10 @@ def upload_file():
         if file:
             if allowed_file(file.filename):
                 filename = clean_filename(file.filename)
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                if os.path.exists(file_path):
+                    flash('Sorry, file with name already exists!')
+                    return render_template('upload.html')
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 return redirect(url_for('get_upload', filename=filename))
             else:
