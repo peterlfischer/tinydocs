@@ -193,3 +193,7 @@ html.dialogs   {
 .slideShowNav {
     top: 0;
 }
+
+.slideShowCtrl {
+    top: 10px;
+}
