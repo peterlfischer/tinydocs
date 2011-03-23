@@ -45,6 +45,14 @@ class SearchSchema(Schema):
     def __setstate__(self, *arg): 
         self._setup_fields() 
 
+
+def strip_scripts(html):
+    import re
+    html = re.sub(r'<\s*script[^>]*>((.|\s)*?)<\\?\/\s*script\s*>', '', html)
+    html = re.sub(r'<\s*script\b([^<>]|\s)*>?', '', html)
+    html = re.sub(r'<[^>]*=(\s|)*[("|\')]javascript:[^$1][(\s|.)]*[$1][^>]*>', '', html)
+    return html
+
 def strip_tags(value):
     return re.sub(r'<[^>]*?>', '', value)
                                             
@@ -56,7 +64,7 @@ class Index(object):
     def add(self, **kwargs):
         for k,v in kwargs.iteritems():
             kwargs[k] = unicode(v)
-        kwargs['body'] = strip_tags(kwargs['body']) 
+        kwargs['body'] = strip_tags(strip_scripts(kwargs['body'])) 
         
         writer = self.ix.writer()
         # update creates or overwrites existing based on path
