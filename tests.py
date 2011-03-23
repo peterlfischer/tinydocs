@@ -111,6 +111,10 @@ class SearchIndexTest(unittest.TestCase):
         result = index.find(query='body')
         self.assertEquals(result.total, 1)
 
+    def test_strip_scripts(self):
+        html = index.strip_scripts('foo<script>fdasfd</script>bar')
+        self.assertEquals(html, 'foobar')
+
 class UploadHandlerTest(unittest.TestCase):
 
     def setUp(self):

@@ -1,0 +1,15 @@
+/* the humans responsible & colophon */
+/* humanstxt.org */
+
+/* TEAM */
+  Developer: Jakob A. Dam
+  Site: http://jdams.org
+  Twitter: jakobadam
+
+  Styler: Peter L. Fischer
+
+/* SITE */
+  Standards: HTML5, CSS3
+  Components: Flask, Whoosh, SQLAlchemy, html5shiv, html5boilerplate, Dojo Toolkit
+  Source: https://github.com/jakobadam/tinydocs
+
