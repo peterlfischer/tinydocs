@@ -184,3 +184,12 @@ html.dialogs   {
 #search_info {
 		
 }
+
+/* dojo overwrite */
+.slideShowImageWrapper{
+    margin-top: -20px;
+}
+
+.slideShowNav {
+    top: 0;
+}
