@@ -92,7 +92,7 @@ ul{
   margin:0;
 }
 
-.sidebar li a {
+.sidebar li a,.sidebar li form {
 	float:right;	
 }
 
