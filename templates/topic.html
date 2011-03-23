@@ -16,6 +16,12 @@
   <section class="topic">
     <div style="float:right">
       <a href="{{o.permalink}}">permalink</a>
+      {% if user -%}
+      <a href="{{o.url}}/edit">[edit]</a>
+      <form action="{{url_for('delete_topic', system_key_name=system.key_name, category=o.category, name=o.name)}}?_method=DELETE" method="POST" style="display:inline">
+        <input type="submit" value="[delete]"></input>
+      </form>
+      {% endif -%}
     </div>
     <h2>{{o.category}} &gt; {{o.name}}</h2>
     <div>{{o.body|safe}}</div>
@@ -23,12 +29,6 @@
 
   {% if user %}
   <section class="admin">
-    <a href="{{o.url}}/edit">[edit]</a>
-
-    <form action="{{url_for('delete_topic', system_key_name=system.key_name, category=o.category, name=o.name)}}?_method=DELETE" method="POST" style="display:inline">
-      <input type="submit" value="[delete]"></input>
-    </form>
-
     <h3>API Examples</h3>
     <p>The following piece of JavaScript enables the plugin:</p>
     <pre>
