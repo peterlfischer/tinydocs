@@ -21,10 +21,14 @@
         <a href="{{url_for('upload_file')}}">[upload image]</a>
       </li>
       <li>
+        <a href="{{url_for('get_uploads')}}">[images]</a>
+      </li>
+      <li>
         <form method="post" action="{{url_for('reindex')}}">
           <input type="submit" value="[re-index]" />
         </form>
       </li>
+      
     </ul>
   </div>
   {%- endif %}
