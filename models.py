@@ -35,6 +35,8 @@ class TinyDocsModel():
     updated = Column('updated', DateTime, default=func.current_timestamp(), onupdate=func.current_timestamp())
     created_by = Column('created_by', String(70))
     updated_by = Column('updated_by', String(70))
+    # Google search results cuts off after this. 
+    meta_description = Column('meta_description', String(155))
 
     def __init__(self, **kwargs):
         [setattr(self, k, v) for k,v in kwargs.iteritems()]
@@ -103,7 +105,7 @@ class Topic(TinyDocsModel, db.Model):
         # we are not using url_for here
         # since we don't want /admin in urls
         url = '/%s' % self.get_key_name()
-        index.add(body=self.body, category=self.category, name=self.name, url=url)
+        index.add(body=self.body, category=self.category, description=self.meta_description, name=self.name, url=url)
         return self
 
 class System(TinyDocsModel, db.Model):

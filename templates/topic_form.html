@@ -13,6 +13,7 @@
       {{ render_field(form.system) }}
       {{ render_field(form.name) }}
       {{ render_field(form.excerpt) }}
+      {{ render_field(form.meta_description, rows=3, cols=80) }}
       {#{ render_field(form.published) }#}
       {#{ render_field(form.login_required) }#}
       {{ render_field(form.body, cols=80, rows=20) }}

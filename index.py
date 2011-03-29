@@ -33,6 +33,7 @@ class SearchSchema(Schema):
             'name': TEXT(stored=True, field_boost=2.0),
             'category':  TEXT(stored=True, field_boost=2.0), 
             'body':  TEXT(stored=True, analyzer=StemmingAnalyzer()), 
+            'description': TEXT(stored=True, field_boost=2.0),
             'url': ID(stored=True, unique=True)
         } 
 
@@ -81,7 +82,7 @@ class Index(object):
 
     def find(self, page=1, query=""):
         query = unicode(query)
-        query = MultifieldParser(['body', 'name', 'category'], schema=SearchSchema()).parse(query)
+        query = MultifieldParser(['body', 'name', 'category','description'], schema=SearchSchema()).parse(query)
         searcher = self.ix.searcher()
         return searcher.search_page(query, page)
 

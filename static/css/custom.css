@@ -51,6 +51,15 @@ a{
     border-bottom:1px dotted #777;
 }
 
+.search-form input[type=text]{
+    style:float:left;
+    width:155px;
+    height:18px
+}
+.search-form input[type=submit]{
+    width:60px
+}
+
 .sidebar h3,
 .sidebar  h2 a {
 
@@ -58,7 +67,7 @@ a{
 }
 
 
-h1 a, h3 a, h2 a {
+h1 a, h3 a, h2 a, .logo a {
 	border-bottom: none;
 	color:#003647;
 }
@@ -66,6 +75,10 @@ h1 a, h3 a, h2 a {
 .sidebar h1 a {
 	float:right;	
 }	
+h1{
+    font-size: 35px;
+    margin-bottom: 10px;
+}
 
 h2{
     font-size: 30px;

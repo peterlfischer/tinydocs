@@ -10,6 +10,8 @@ from models import Topic
 from models import System
 from models import db
 
+META_DESCRIPTION = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut odio. Nam sed est. Nam a risus et est iaculis adipiscing. Vestibulum ante ipsum primis in"
+
 class SystemsHandlerTest(unittest.TestCase):
 
     def setUp(self):
@@ -29,7 +31,9 @@ class SystemsHandlerTest(unittest.TestCase):
     def test_post_new_system_when_logged_in(self):
         r = self.c.post(path='/new', 
                         environ_overrides={'REMOTE_USER':'admin'}, 
-                        data={'name':'the-cool-system', 'description': 'this is a cool system'})
+                        data={'name':'the-cool-system', 
+                              'description': 'this is a cool system',
+                              'meta_description':META_DESCRIPTION})
         self.assertEquals(r.status_code, 302)
         s = System.query.get('the-cool-system')
         self.assertEquals(s.name, 'the-cool-system')
@@ -54,12 +58,16 @@ class TopicHandlerTest(unittest.TestCase):
     def test_add(self):
         r = self.c.post(path="/asystem/new", 
                         environ_overrides={'REMOTE_USER':'admin'}, 
-                        data={'body': u'the body','category': u'the category', 'excerpt':u'foo', 'name': u'the name'})
+                        data={'body': u'the body',
+                              'category': u'the category', 
+                              'excerpt':u'foo', 
+                              'name': u'the name',
+                              'meta_description': META_DESCRIPTION})
         self.assertEquals(r.status_code, 302)
         # # check index
 
     def test_edit_form(self):
-        t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
+        t = Topic(name="foo", category="cat", system="asystem", body="abody", meta_description=META_DESCRIPTION).put()
         r = self.c.get(path='/asystem/cat/foo/edit', environ_overrides={'REMOTE_USER':'admin'})
         self.assertEquals(r.status_code, 200)
         self.assertTrue('abody' in r.data)
@@ -71,7 +79,11 @@ class TopicHandlerTest(unittest.TestCase):
         t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
         r = self.c.post(path='/asystem/cat/foo/edit',
                         environ_overrides={'REMOTE_USER':'admin'},
-                        data={'body': u'new body','category': u'new category', 'name': u'new name','excerpt':'foo'})
+                        data={'body': u'new body',
+                              'category': u'new category', 
+                              'name': u'new name',
+                              'excerpt':'foo',
+                              'meta_description':META_DESCRIPTION})
         self.assertEquals(r.status_code, 302)
         self.assertTrue('/new-category/new-name' in r.headers.get('location'))
 

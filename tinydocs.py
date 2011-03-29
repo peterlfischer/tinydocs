@@ -177,7 +177,7 @@ def reindex():
 ##################
 @app.route('/', methods=['GET'])
 def get_systems():
-    return render_template('systems.html', systems=System.query.all())
+    return render_template('systems.html', systems=System.query.all(), root=True)
 
 @app.route('/<key_name>', methods=['GET'])
 def get_system(key_name):

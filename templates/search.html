@@ -14,7 +14,7 @@ Your search didn't return any results
 {% else %}
 <ul>
   {%- for r in results %}
-    <li><h3><a href="{{r.url}}">{{r.category}} | {{r.name}}</a></h3><p>{{r.body|safe}}</li>
+    <li><h3><a href="{{r.url}}">{{r.category}} | {{r.name}}</a></h3><p>{{r.description}}</li>
   {%- endfor %}
 </ul>
 {% endif %}

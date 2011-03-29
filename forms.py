@@ -2,6 +2,7 @@ from flaskext.wtf import Form
 from flaskext.wtf import TextField
 from flaskext.wtf import TextAreaField
 from flaskext.wtf import Required
+from flaskext.wtf import Length
 from flaskext.wtf import BooleanField
 from flaskext.wtf import HiddenField
 
@@ -11,6 +12,7 @@ class TopicForm(Form):
     
     body = TextAreaField('Body', [Required()])
     excerpt = TextAreaField('Excerpt', [Required()])
+    meta_description = TextAreaField('Meta Description', [Required(), Length(min=100, max=155)])
     category = TextField('Category', [Required()])
     name = TextField('Name', [Required()])
     published = BooleanField('Published')
@@ -28,6 +30,7 @@ class SystemForm(Form):
 
     name = TextField('Name', [Required()])
     description = TextAreaField('Description', [Required()])
+    meta_description = TextAreaField('Meta Description', [Required(), Length(min=100, max=155)])
     icon_url = TextField('Icon URL')
 
     def __init__(self, *args, **kwargs):
