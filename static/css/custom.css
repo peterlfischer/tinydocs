@@ -53,16 +53,18 @@ a{
 
 .search-form input[type=text]{
     style:float:left;
-    width:155px;
-    height:18px
+    width:159px;
+    height:25px;
+    margin:0;
 }
 .search-form input[type=submit]{
-    width:60px
+    width:55px;
+    margin:0;
+    height:26px;
 }
 
 .sidebar h3,
 .sidebar  h2 a {
-
     float:right;	
 }
 
