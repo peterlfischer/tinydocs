@@ -5,12 +5,12 @@ html {
 
 header{
     background-color: #59BEDD;
-       height: 128px;
+    height: 62px;
 }
 
 header h1 {
 	position:relative;
-	top:76px;
+	top:10px;
 }
 
 header div.grid_6 {
