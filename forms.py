@@ -12,7 +12,7 @@ class TopicForm(Form):
     
     body = TextAreaField('Body', [Required()])
     excerpt = TextAreaField('Excerpt', [Required()])
-    meta_description = TextAreaField('Meta Description', [Required(), Length(min=100, max=155)])
+    meta_description = TextAreaField('Meta Description', [Required(), Length(min=90, max=170)])
     category = TextField('Category', [Required()])
     name = TextField('Name', [Required()])
     published = BooleanField('Published')
@@ -30,7 +30,7 @@ class SystemForm(Form):
 
     name = TextField('Name', [Required()])
     description = TextAreaField('Description', [Required()])
-    meta_description = TextAreaField('Meta Description', [Required(), Length(min=100, max=155)])
+    meta_description = TextAreaField('Meta Description', [Required(), Length(min=90, max=170)])
     icon_url = TextField('Icon URL')
 
     def __init__(self, *args, **kwargs):
