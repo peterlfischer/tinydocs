@@ -1,27 +1,31 @@
 {% extends 'base.html' %}
+{% block title %}{{query}}{% endblock %}
 {% block body %}
 <h1>Search Results</h1>
 <div id="search_info" style="float:right">
-  {% if results.total == 1 %}
+  {%- if results.total == 1 -%}
 1 match. 
-  {% else %}
+  {%- else -%}
 {{ results.total }} matches.
-  {% endif %}
+  {%- endif -%}
 </div>
 <div>
-{%- if results.count == 0 %}
-Your search didn't return any results
-{% else %}
+{%- if results.total == 0 -%}
+Your search didn't return any results!
+{%- else -%}
 <ul>
   {%- for r in results %}
-    <li><h3><a href="{{r.url}}">{{r.category}} | {{r.name}}</a></h3><p>{{r.description}}</li>
+  <li><h3><a href="{{r.url}}">{{r.category}} | {{r.name}}</a></h3><p>{{r.description}}</li>
   {%- endfor %}
 </ul>
-{% endif %}
+{%- endif -%}
+</div>
+{%- if results.pagecount > 1 %}
 <div style="width:100%;text-align:center;">
   Pages:
 {%- for p in range(results.pagecount) %}
   <a href="?q={{query}}&page={{p+1}}">{{p+1}}</a>
 {%- endfor %}
 </div>
+{%- endif %}
 {% endblock %}
