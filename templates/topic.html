@@ -1,7 +1,7 @@
 {% extends 'base.html'%}
 {% from "_sidebarhelpers.html" import render_sidebar %}
 {% set system = o.system_as_obj %}
-{% block title %}{{system.name}}: {{o.name}}{% endblock %}
+{% block title %}{{o.name}}: {{system.name}}{% endblock %}
 {% block description %}{{o.meta_description}}{% endblock%}
 {% block head %}
 <link href="//ajax.googleapis.com/ajax/libs/dojo/1.6/dojox/image/resources/image.css" rel="stylesheet" />
