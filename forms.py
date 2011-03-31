@@ -12,7 +12,7 @@ class TopicForm(Form):
     
     body = TextAreaField('Body', [Required()])
     excerpt = TextAreaField('Excerpt', [Required()])
-    meta_description = TextAreaField('Meta Description', [Required(), Length(min=90, max=170)])
+    meta_description = TextAreaField('Meta Description')
     category = TextField('Category', [Required()])
     name = TextField('Name', [Required()])
     published = BooleanField('Published')

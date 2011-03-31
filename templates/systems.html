@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
+{% from "_sidebarhelpers.html" import render_sidebar %}
 {% block title %}Help and documentation for Irigo Services{% endblock %}
 {% block description %}Help and documentation for Irigo Services.{% endblock %}
 {% block body %}
+{% if user %}
+<aside class="sidebar grid_3">
+  {{ render_sidebar(None, user) }}
+</aside>
+{% endif %}
+
 <ul class="clearfix">
 {%- for e in systems -%}
 <li class="grid_3">
@@ -15,21 +22,5 @@
 </li>
 {% endfor %}
 </ul>
-
-{% if user %}
-<div class="admin">
-  <ul>
-    <li>
-      <a href="{{url_for('add_system')}}">[add system]</a>
-    </li>
-    <li>
-      <a href="{{url_for('upload_file')}}">[upload image]</a>
-    </li>
-    <li>
-      <a href="{{url_for('get_uploads')}}">[images]</a>
-    </li>
-  </ul>
-</div>
-{% endif %}
 
 {% endblock %}

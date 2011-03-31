@@ -8,14 +8,16 @@
   <div class="admin">
     <h3>Admin</h3>
     <ul>
+      {%- if system %}
       <li>
         <a href="{{url_for('add_topic', system_key_name=system.key_name)}}">[add topic]</a>
       </li>
       <li>
-        <a href="{{url_for('add_system')}}">[add system]</a>
-      </li>
-      <li>
         <a href="{{url_for('edit_system', key_name=system.key_name)}}">[edit system]</a>
+      </li>
+      {%- endif %}
+      <li>
+        <a href="{{url_for('add_system')}}">[add system]</a>
       </li>
       <li>
         <a href="{{url_for('upload_file')}}">[upload image]</a>
@@ -28,11 +30,10 @@
           <input type="submit" value="[re-index]" />
         </form>
       </li>
-      
     </ul>
   </div>
   {%- endif %}
-
+  {%- if system %}
   <nav>
     <ul>
 {%- set category = 'foo' -%}
@@ -49,4 +50,5 @@
     {%- endfor %}
     </ul>
   </nav>
+  {%- endif %}
 {%- endmacro -%}

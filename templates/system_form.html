@@ -1,7 +1,12 @@
 {% extends 'base.html'%}
+{% from "_sidebarhelpers.html" import render_sidebar %}
+{% block title %}System{% endblock %}
 {% block body %}
 {% from "_formhelpers.html" import render_field %}
-<div class="sidebar grid_3">&nbsp;</div>
+<aside class="sidebar grid_3">
+  {{ render_sidebar(None, user) }}
+</aside>
+
 <div class="grid_9">
   <h2>System</h2>
   <form method="post" action="" >
@@ -25,6 +30,7 @@
 {% endblock %}
 
 {% block script %}
+  <script src="//docs.irigo.com/plugin/embed.js"></script>
   <script>
     dojo.require("dijit.Editor");
     dojo.require("dijit._editor.plugins.LinkDialog");
@@ -39,6 +45,8 @@
       dojo.query('form').onsubmit(function () {
          dojo.byId('description').value = editor.get('value');
       });
+
+      dojo.query('.irigo-tooltip').irigoTooltip();
    });
   </script>
 {% endblock %}  
