@@ -29,7 +29,7 @@ dojo.ready(function(){
     var topic_url = node.href;
   
     var dialog = new dijit.TooltipDialog({
-      style:"width:200px"
+      style:"width:300px"
     });
     
     var button = new dijit.form.DropDownButton({
@@ -57,7 +57,7 @@ dojo.ready(function(){
     var topic_url = node.href;
 
     var dialog = new dijit.Dialog({
-      style:"width:200px"
+      style:"width:300px"
     });
 
     var button = new dijit.form.DropDownButton({
