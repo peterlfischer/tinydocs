@@ -13,12 +13,15 @@
       {{ render_field(form.system) }}
       {{ render_field(form.name) }}
       {{ render_field(form.excerpt) }}
-      {{ render_field(form.meta_description, rows=3, cols=80) }}
+      {{ render_field(form.meta_description, rows=3, cols=80, docsuid="jNyH9vp") }}
+
       {#{ render_field(form.published) }#}
       {#{ render_field(form.login_required) }#}
+
       {{ render_field(form.body, cols=80, rows=20) }}
       <dt>
         {{form.excerpt.label}}
+        <a href="//docs.irigo.com/topics/a3bQm" rel="help" target="_blank" class="irigo-tooltip">help</a>
       </dt>
       <dd>
         <div id="excerpt-field" style="min-height:100px"></div>
@@ -37,6 +40,7 @@
 {% endblock %}
 
 {% block script %}
+  <script src="//docs.irigo.com/plugin/embed.js"></script>
   <script>
     dojo.require("dijit.Editor");
     dojo.require("dijit._editor.plugins.LinkDialog");
@@ -60,6 +64,9 @@
          dojo.byId('body').value = body_editor.get('value');
          dojo.byId('excerpt').value = excerpt_editor.get('value');
       });
+
+    dojo.query('.irigo-tooltip').irigoTooltip();
    });
   </script>
+
 {% endblock %}  

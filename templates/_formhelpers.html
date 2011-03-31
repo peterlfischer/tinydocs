@@ -1,7 +1,11 @@
-{% macro render_field(field) %}
+{% macro render_field(field, docsuid=None) %}
 <div id="{{field.label.text|lower}}-wrapper">
   {% if field.type != 'HiddenField' %}
-  <dt>{{ field.label.text }}</dt>
+  <dt>{{ field.label.text }}      
+    {%- if docsuid %}
+    <a href="//docs.irigo.com/topics/{{docsuid}}" rel="help" target="_blank" class="irigo-tooltip">help</a>
+    {%- endif %}
+  </dt>
   {% endif %}
   <dd>{{ field(**kwargs)|safe }}
   {% if field.errors %}
