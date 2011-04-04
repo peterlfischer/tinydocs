@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import logging
 import os
 
 from flask import request
@@ -9,11 +8,12 @@ from flask import url_for
 from flask import flash
 from flask import abort
 from flask import Response
-from flask import Flask
 from flask import session
 from flask import send_from_directory
 
 from werkzeug import secure_filename
+
+from urllib import quote
 
 import json
 import forms
@@ -31,16 +31,10 @@ from functools import wraps
 ###################
 @app.context_processor
 def inject_user():
-    if app.config.get('MODE') == 'development':
-        if session.get('username'):
-            return dict(user=session['username'], logout_url='/logout')
-        else:
-            return dict(login_url='/login')
+    if session.get('username'):
+        return dict(user=session['username'], logout_url='/logout')
     else:
-        if request.environ.get('REMOTE_USER'):
-            return dict(user=True)
-        else:
-            return dict(user=None,login_url='/admin%s' % request.path)
+        return dict(login_url='/login?continue=%s' % quote(request.path))
 
 @app.context_processor
 def inject_media_version():
@@ -59,9 +53,7 @@ def date(value, format='%d-%m-%Y'):
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if request.environ.get('REMOTE_USER'):
-            return f(*args, **kwargs)
-        if app.config.get('MODE') == 'development' and session.get('username'):
+        if session.get('username'):
             return f(*args, **kwargs)
         return Response('You need to login first!', status=400)
     return decorated_function
@@ -138,21 +130,31 @@ def edit(Type=None, key_name=None, form=None, **kwargs):
 def page_not_found(e):
     return render_template('404.html'), 404
 
-#################
-# Dev. mode auth
-################
+def development_login():
+    if request.method == 'GET':
+        return '''
+    <form action="" method="post">
+        <p><input type="text" name="username" />
+        <p><input type="submit" value="Login" />
+    </form>'''
+    else:
+        session['username'] = request.form['username']
+        return redirect(request.args.get('continue', '/'))
+
+def production_login():
+    if request.environ.get('REMOTE_USER'):
+        session['username'] = request.form['username']
+        return redirect(request.args.get('continue', '/'))
+    abort(404)    
+    
+######
+# Auth
+######
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if app.config.get('MODE') == 'development':
-        if request.method == 'POST':
-            session['username'] = request.form['username']
-            return redirect(url_for('get_systems'))
-        return '''
-        <form action="" method="post">
-            <p><input type="text" name="username" />
-            <p><input type="submit" value="Login" />
-        </form>'''
-    abort(404)
+        return development_login()
+    return production_login()
 
 @app.route('/logout')
 def logout():
@@ -208,11 +210,11 @@ def get_topic_plugin():
     t = render_template('embed.js', host=request.environ['HTTP_HOST'])
     return Response(t, mimetype='application/javascript', headers=headers)
 
-@app.route('/plugin/<uid>', methods=['GET'])
-def get_topic_plugin_by_uid(uid):
-    """Renders a tooltip button for use in iframes."""
-    obj = Topic.query.filter_by(uid=uid).first_or_404()
-    return render_template("topic.plugin.html", o=obj)
+# @app.route('/plugin/<uid>', methods=['GET'])
+# def get_topic_plugin_by_uid(uid):
+#     """Renders a tooltip button for use in iframes."""
+#     obj = Topic.query.filter_by(uid=uid).first_or_404()
+#     return render_template("topic.plugin.html", o=obj)
 
 # For cross-site use
 @app.route('/topics/<uid>/jsonp', methods=['GET'])
@@ -227,7 +229,6 @@ def get_topic_by_uid_and_jsonp(uid):
 @app.route('/topics/<uid>', methods=['GET'])
 def get_topic_by_uid(uid):
     obj = Topic.query.filter_by(uid=uid).first_or_404()
-    host = request.environ['HTTP_HOST']
     return redirect(obj.url)
 
 @app.route('/<system_key_name>/<category>/<name>', methods=['GET'])
