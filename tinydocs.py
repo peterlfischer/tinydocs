@@ -142,10 +142,11 @@ def development_login():
         return redirect(request.args.get('continue', '/'))
 
 def production_login():
-    if request.environ.get('REMOTE_USER'):
-        session['username'] = request.form['username']
-        return redirect(request.args.get('continue', '/'))
-    abort(404)    
+    user = request.environ.get('REMOTE_USER')
+    if user:
+       session['username'] = user
+       return redirect(request.args.get('continue', '/'))
+    abort(401)
     
 ######
 # Auth
