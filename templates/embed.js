@@ -6,7 +6,21 @@ dojo.require('dijit.form.DropDownButton');
 dojo.require('dojo.io.script');
 
 dojo.ready(function(){
-  
+
+  var hasTundra = dojo.hasClass(dojo.body(), 'tundra');
+
+  function addStyle(){
+    if(!hasTundra){
+      dojo.addClass(dojo.body(), 'tundra');
+    }
+  }
+
+  function removeStyle(){
+    if(!hasTundra){
+      dojo.removeClass(dojo.body(), 'tundra');
+    }
+  }
+
   function loadStylesheet(){
     var link = dojo.create("link", {
       type: "text/css",
@@ -36,6 +50,12 @@ dojo.ready(function(){
       dropDown: dialog,
       baseClass:"irigo-tooltip-base",
       iconClass:"irigo-tooltip-base-icon",
+      onOpen: function(){
+        addStyle();
+      },
+      onClose: function(){
+        removeStyle();
+      },
       onClick: function(e){
         if(dialog.get('content') == ''){
           var dfd = getTopic(topic_url);
@@ -63,6 +83,12 @@ dojo.ready(function(){
     var button = new dijit.form.DropDownButton({
       baseClass:"irigo-tooltip-base",
       iconClass:"irigo-tooltip-base-icon",
+      onOpen: function(){
+        addClass();
+      },
+      onClose: function(){
+        removeClass();
+      },
       onClick: function(e){
         if(dialog.get('content') == ''){
           var dfd = getTopic(topic_url);
