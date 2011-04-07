@@ -94,7 +94,7 @@ dojo.ready(function(){
           var dfd = getTopic(topic_url);
           dfd.then(function(js){
             dialog.set('title', js.name);
-            dialog.set('content', '<p>' + js.excerpt + '</p><p style="float:right"><a href="' + topic_url + '">more</a></p>');
+            dialog.set('content', '<p>' + js.excerpt + '</p><p style="float:right"><a href="' + topic_url + '" target="_blank">more</a></p>');
           });
         }
         dialog.show();
