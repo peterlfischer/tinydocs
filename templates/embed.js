@@ -22,12 +22,24 @@ dojo.ready(function(){
   }
 
   function loadStylesheet(){
-    var link = dojo.create("link", {
+    var embedCss = dojo.create("link", {
       type: "text/css",
       rel: "stylesheet",
       href: "//{{host}}/static/css/embed.css"
     });
-    dojo.doc.getElementsByTagName("head")[0].appendChild(link);
+    // add tundra css if not there!
+    // FIXME: copy paste the relevant parts from that stylesheet into embed.css
+    // and rename tundra.
+    if(!hasTundra){
+      var tundraCss = dojo.create("link", {
+        type: "text/css",
+        rel: "stylesheet",
+        href: "//ajax.googleapis.com/ajax/libs/dojo/1.6/dijit/themes/tundra/tundra.css"
+      });
+      head.appendChild(tundraCss);
+    }
+    var head = dojo.doc.getElementsByTagName("head")[0];
+    head.appendChild(link);
   }
 
   function getTopic(url){
