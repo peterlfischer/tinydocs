@@ -39,7 +39,7 @@ dojo.ready(function(){
       head.appendChild(tundraCss);
     }
     var head = dojo.doc.getElementsByTagName("head")[0];
-    head.appendChild(link);
+    head.appendChild(embedCss);
   }
 
   function getTopic(url){
