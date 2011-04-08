@@ -22,6 +22,8 @@ dojo.ready(function(){
   }
 
   function loadStylesheet(){
+    var head = dojo.doc.getElementsByTagName("head")[0];
+
     var embedCss = dojo.create("link", {
       type: "text/css",
       rel: "stylesheet",
@@ -38,7 +40,6 @@ dojo.ready(function(){
       });
       head.appendChild(tundraCss);
     }
-    var head = dojo.doc.getElementsByTagName("head")[0];
     head.appendChild(embedCss);
   }
 
