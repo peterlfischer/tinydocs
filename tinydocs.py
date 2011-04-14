@@ -22,7 +22,7 @@ from config import app
 
 from models import System
 from models import Topic
-from models import Error
+from models import ModelError
 
 from functools import wraps
 
@@ -86,7 +86,7 @@ def add(Type=None, form=None, **kwargs):
             o.put()
             flash('Nice, you just saved %s' % (o.name), 'message')
             return redirect(o.url)
-    except Error, e:
+    except ModelError, e:
         flash(e, 'error')
     return render_template("%s_form.html" % Type.__name__.lower(), form=form,**kwargs)
 
@@ -129,7 +129,10 @@ def edit(Type=None, key_name=None, form=None, **kwargs):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
-
+    
+######
+# Auth
+######
 def development_login():
     if request.method == 'GET':
         return '''
@@ -147,10 +150,7 @@ def production_login():
        session['username'] = user
        return redirect(request.args.get('continue', '/'))
     abort(401)
-    
-######
-# Auth
-######
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if app.config.get('MODE') == 'development':
@@ -180,7 +180,7 @@ def reindex():
 ##################
 @app.route('/', methods=['GET'])
 def get_systems():
-    return render_template('systems.html', systems=System.query.all(), root=True)
+    return render_template('systems.html', systems=System.query.all(), site_root=True)
 
 @app.route('/<key_name>', methods=['GET'])
 def get_system(key_name):
@@ -211,12 +211,6 @@ def get_topic_plugin():
     t = render_template('embed.js', host=request.environ['HTTP_HOST'])
     return Response(t, mimetype='application/javascript', headers=headers)
 
-# @app.route('/plugin/<uid>', methods=['GET'])
-# def get_topic_plugin_by_uid(uid):
-#     """Renders a tooltip button for use in iframes."""
-#     obj = Topic.query.filter_by(uid=uid).first_or_404()
-#     return render_template("topic.plugin.html", o=obj)
-
 # For cross-site use
 @app.route('/topics/<uid>/jsonp', methods=['GET'])
 def get_topic_by_uid_and_jsonp(uid):
@@ -224,7 +218,7 @@ def get_topic_by_uid_and_jsonp(uid):
     obj = Topic.query.filter_by(uid=uid).first_or_404()
     callback = request.args.get('callback')
     data = json.dumps({'name': obj.name, 'excerpt':obj.excerpt})
-    return Response(response='%s(%s)' % (callback, data), mimetype='application/json')
+    return Response(response='%s(%s)' % (callback, data), mimetype='application/javascript')
 
 # For normal use
 @app.route('/topics/<uid>', methods=['GET'])
@@ -329,7 +323,6 @@ def upload_file():
     return render_template('upload.html')
 
 if __name__ == '__main__':
-    import os
     if not os.path.exists(app.config['DATABASE_FILE']):
         from models import db
         db.create_all()
