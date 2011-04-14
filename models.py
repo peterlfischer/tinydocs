@@ -19,7 +19,7 @@ from config import app
 
 db = SQLAlchemy(app)
 
-class Error(Exception):
+class ModelError(Exception):
     pass
 
 URL_CHARS = 'abcdefghijkmpqrstuvwxyzABCDEFGHIJKLMNPQRST23456789'
@@ -61,7 +61,7 @@ class TinyDocsModel():
             db.session.commit()
             return self
         except IntegrityError:
-            raise Error('Hey dude, <a href="%s">%s</a> is already present!' % (self.key_name, self.key_name))
+            raise ModelError('Hey dude, <a href="%s">%s</a> is already present!' % (self.key_name, self.key_name))
 
     def delete(self):
         db.session.delete(self)
@@ -78,9 +78,8 @@ class Topic(TinyDocsModel, db.Model):
     __tablename__ = u'topic'
  
     body = Column('body', Text, nullable=False)
-    system = Column('system', String(20), nullable=False)
+    system = Column('system', String(10), nullable=False)
     category = Column('category', String(256), nullable=False)
-    published = Column('published', Boolean)
     excerpt = Column('excerpt', Text)
     login_required = Column('login_required', Boolean)
 
