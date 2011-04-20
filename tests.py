@@ -10,12 +10,18 @@ from models import Topic
 from models import System
 from models import db
 
+tinydocs.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tinydocs.test.db'
+
 META_DESCRIPTION = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut odio. Nam sed est. Nam a risus et est iaculis adipiscing. Vestibulum ante ipsum primis in"
+
+def login(client, username):
+    return client.post('/login', data=dict(
+        username=username,
+    ), follow_redirects=True)
 
 class SystemsHandlerTest(unittest.TestCase):
 
     def setUp(self):
-        tinydocs.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/tinydocs.test.db'
         db.create_all()
         self.c = tinydocs.app.test_client()
 
@@ -23,14 +29,13 @@ class SystemsHandlerTest(unittest.TestCase):
         db.drop_all()
 
     def test_get_new_system_form(self):
-        r = self.c.get(path="/new",
-                       environ_overrides={'REMOTE_USER':'admin'}
-                       )
+        login(self.c, 'dev')
+        r = self.c.get(path="/new")
         self.assertEquals(r.status_code, 200)
 
     def test_post_new_system_when_logged_in(self):
+        login(self.c, 'dev')
         r = self.c.post(path='/new', 
-                        environ_overrides={'REMOTE_USER':'admin'}, 
                         data={'name':'the-cool-system', 
                               'description': 'this is a cool system',
                               'meta_description':META_DESCRIPTION})
@@ -56,8 +61,8 @@ class TopicHandlerTest(unittest.TestCase):
         db.drop_all()
     
     def test_add(self):
+        login(self.c, 'dev')
         r = self.c.post(path="/asystem/new", 
-                        environ_overrides={'REMOTE_USER':'admin'}, 
                         data={'body': u'the body',
                               'category': u'the category', 
                               'excerpt':u'foo', 
@@ -67,8 +72,9 @@ class TopicHandlerTest(unittest.TestCase):
         # # check index
 
     def test_edit_form(self):
+        login(self.c, 'dev')
         t = Topic(name="foo", category="cat", system="asystem", body="abody", meta_description=META_DESCRIPTION).put()
-        r = self.c.get(path='/asystem/cat/foo/edit', environ_overrides={'REMOTE_USER':'admin'})
+        r = self.c.get(path='/asystem/cat/foo/edit')
         self.assertEquals(r.status_code, 200)
         self.assertTrue('abody' in r.data)
         self.assertTrue('foo' in r.data)
@@ -76,9 +82,9 @@ class TopicHandlerTest(unittest.TestCase):
         self.assertTrue('asystem' in r.data)
 
     def test_edit(self):
+        login(self.c, 'dev')
         t = Topic(name="foo", category="cat", system="asystem", body="abody").put()
         r = self.c.post(path='/asystem/cat/foo/edit',
-                        environ_overrides={'REMOTE_USER':'admin'},
                         data={'body': u'new body',
                               'category': u'new category', 
                               'name': u'new name',
@@ -130,9 +136,11 @@ class SearchIndexTest(unittest.TestCase):
 class UploadHandlerTest(unittest.TestCase):
 
     def setUp(self):
+        db.create_all()
         self.c = tinydocs.app.test_client()
 
     def test_get_upload_page(self):
+        login(self.c, 'dev')
         r = self.c.get(path='/upload/', environ_overrides={'REMOTE_USER':'admin'})
         self.assertEquals(r.status_code, 200)
 
