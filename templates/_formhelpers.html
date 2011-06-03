@@ -1,4 +1,4 @@
-{% macro render_field(field, docsuid=None) %}
+{% macro render_field(field, docsuid=None, extra_field=False) %}
 <div id="{{field.label.text|lower}}-wrapper">
   {% if field.type != 'HiddenField' %}
   <dt>{{ field.label.text }}      
@@ -8,9 +8,10 @@
   </dt>
   {% endif %}
   <dd>{{ field(**kwargs)|safe }}
-  {% if field.errors %}
+    {% if extra_field %}<div id="{{field.id}}-field"></div>{% endif %}
+    {% if field.errors %}
     <ul class="errors">
-    {% for error in field.errors %}<li>{{ error }}{% endfor %}
+      {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
     </ul>
   {% endif %}
   </dd>

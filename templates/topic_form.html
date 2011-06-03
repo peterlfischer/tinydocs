@@ -12,26 +12,9 @@
       {{ render_field(form.category) }}
       {{ render_field(form.system) }}
       {{ render_field(form.name) }}
-      {{ render_field(form.excerpt) }}
       {{ render_field(form.meta_description, rows=3, cols=80, docsuid="jNyH9vp") }}
-
-      {#{ render_field(form.published) }#}
-      {#{ render_field(form.login_required) }#}
-
-      {{ render_field(form.body, cols=80, rows=20) }}
-      <dt>
-        {{form.excerpt.label}}
-        <a href="//docs.irigo.com/topics/a3bQm" rel="help" target="_blank" class="irigo-tooltip">help</a>
-      </dt>
-      <dd>
-        <div id="excerpt-field" style="min-height:100px"></div>
-      </dd>
-      <dt>
-        {{form.body.label}}
-      </dt>
-      <dd>
-        <div id="body-field" style="min-height:200px"></div>
-      </dd>
+      {{ render_field(form.excerpt, extra_field=True) }}
+      {{ render_field(form.body, extra_field=True) }}
     </dl>
     
     <p><input type="submit" value="Save Topic"></p>
@@ -53,7 +36,7 @@
         height:'', 
         extraPlugins:['createLink', 'insertImage', {name: 'viewsource', stripScripts: false, stripComments:false}, 'dijit._editor.plugins.AlwaysShowToolbar']};
 
-      dojo.query('#body-wrapper, #excerpt-wrapper').style({display:'none'});
+      dojo.query('#body, #excerpt').style({display:'none'});
       body_editor = new dijit.Editor(editor_args, dojo.byId('body-field'));
       var excerpt_editor = new dijit.Editor(editor_args, dojo.byId('excerpt-field'));
       body_editor.set('value', dojo.byId('body').value);

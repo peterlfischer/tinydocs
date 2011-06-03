@@ -12,15 +12,9 @@
   <form method="post" action="" >
     <dl>
       {{ render_field(form.name) }}
-      {{ render_field(form.description, cols=80, rows=20) }}
+      {{ render_field(form.description, extra_field=True) }}
       {{ render_field(form.meta_description, rows=3, cols=80, docsuid="jNyH9vp") }}
       {{ render_field(form.icon_url) }}
-      <dt>
-        {{form.description.label}}
-      </dt>
-      <dd>
-        <div id="description-field"></div>
-      </dd>
     </dl>
     
     <p><input type="submit" value="Save System"></p>
@@ -30,16 +24,21 @@
 {% endblock %}
 
 {% block script %}
-  <script src="//docs.irigo.com/plugin/embed.js"></script>
+  <!-- <script src="//docs.irigo.com/plugin/embed.js"></script> -->
   <script>
     dojo.require("dijit.Editor");
     dojo.require("dijit._editor.plugins.LinkDialog");
     dojo.require("dijit._editor.plugins.ViewSource");
+    dojo.require("dijit._editor.plugins.AlwaysShowToolbar");
 
     dojo.ready(function () {
 
-      dojo.query('#description-wrapper').style({display:'none'});
-      var editor = new dijit.Editor({extraPlugins:['createLink', 'insertImage', 'viewsource']}, dojo.byId('description-field'));
+      dojo.query('#description').style({display:'none'});
+      var editor = new dijit.Editor({extraPlugins:[
+        'dijit._editor.plugins.AlwaysShowToolbar', 
+        'createLink', 
+        'insertImage', 
+        'viewsource']}, dojo.byId('description-field'));
       editor.set('value', dojo.byId('description').value);
 
       dojo.query('form').onsubmit(function () {
