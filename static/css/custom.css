@@ -163,11 +163,10 @@ time{
     background-color: #FFF;
 }
 
-
 /*ERRORS*/
 ul.errors {
-	margin-left:0;	
-	display:inline-block;
+	margin:5px;	
+	display:block;
 }
 ul.errors li {
 	color:red;	
