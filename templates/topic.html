@@ -17,6 +17,7 @@
     <div style="float:right">
       <a href="{{o.permalink}}">permalink</a>
       {% if user -%}
+      <a href="{{o.permalink}}/html">simple</a>
       <a href="{{o.url}}/edit">[edit]</a>
       <form action="{{o.url}}?_method=DELETE" method="POST" style="display:inline">
         <input type="submit" value="[delete]"></input>
