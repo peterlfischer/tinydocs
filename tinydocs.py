@@ -226,6 +226,12 @@ def get_topic_by_uid(uid):
     obj = Topic.query.filter_by(uid=uid).first_or_404()
     return redirect(obj.url)
 
+@app.route('/topics/<uid>/html', methods=['GET'])
+def get_topic_part_by_uid(uid):
+    """Gets HTML part of topic, i.d., no body and head tag"""
+    obj = Topic.query.filter_by(uid=uid).first_or_404()
+    return """<h3>%s</h3><div>%s</div>""" % (obj.name, obj.body)
+
 @app.route('/<system_key_name>/<category>/<name>', methods=['GET'])
 def get_topic(system_key_name, category, name):
     key_name = '%s/%s/%s' % (system_key_name, category, name)
