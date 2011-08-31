@@ -78,6 +78,7 @@ dojo.ready(function(){
         }
         // else, we've already loaded the content.
         dojo.stopEvent(e);
+        return false;
       }
     }); 
     // replacing the a tag!
